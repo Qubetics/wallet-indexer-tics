@@ -32,7 +32,7 @@ class UtilityHelper {
         //     });
         // })();
     }
-    //    public REDIS_BLOCKS: string = `${CONFIG.REDISKEYS.BLOCKS}_${CONFIG.COIN_FAMILY_ETH}`;
+    //    public REDIS_BLOCKS: string = `${CONFIG.REDISKEYS.BLOCKS}_${CONFIG.COIN_FAMILY_TICS}`;
     // public FCM_SERVER_KEY: any = config.KEYS.FCM_PUSH;
 
     bigNumberSafeMath = async (c: any, operation: any, d: any) => {

@@ -4,13 +4,13 @@ import kafkaHelper from "../config/kafka.helper";
 import { CoinFamilyEnum } from "../enum";
 import { CoinInterface, CoinsModel } from "../models";
 import WalletModel from "../models/tables/model.wallets";
-// import ethProcessHelper from "../processes/process.helper";
+// import ticsProcessHelper from "../processes/process.helper";
 import { Blockchain_Helper } from "./blockchain.helper";
 import { Utility_Helper } from "./utility.helper";
 // import utxo from "./utxo";
 
 class WalletHelper {
-    public eth_pending_balance_update_topic = config.config.KAFKA_BALANCE.ETH_PENDING_BALANCE_UPDATE_TOPIC;
+    public tica_pending_balance_update_topic = config.config.KAFKA_BALANCE.TICS_PENDING_BALANCE_UPDATE_TOPIC;
 
     Fetch_Balance = async (
         address: string,
@@ -20,7 +20,7 @@ class WalletHelper {
             let balance: number | null = 0;
             if (coin) {
                 switch (coin.coin_family) {
-                    case CoinFamilyEnum.ETH:
+                    case CoinFamilyEnum.TICS:
                         balance = await Blockchain_Helper.Fetch_Balance(address, coin);
                         break;
                     // case CoinFamilyEnum.BNB:
@@ -87,13 +87,13 @@ class WalletHelper {
             }
             else {
 
-                //let queue = config.config.KAFKA_BALANCE.ETH_PENDING_BALANCE_UPDATE_TOPIC;
+                //let queue = config.config.KAFKA_BALANCE.TICS_PENDING_BALANCE_UPDATE_TOPIC;
                 let data = {
                     coin_data: coin,
                     wallet_address: wallet_address,
                     queue_count: 0,
                 }
-                await kafkaHelper.produceMessage(this.eth_pending_balance_update_topic, data)
+                await kafkaHelper.produceMessage(this.tica_pending_balance_update_topic, data)
                 // await rabbitMq.assertQueue(queue);
                 // await rabbitMq.sendToQueue(queue, Buffer.from(JSON.stringify(data)));
             }

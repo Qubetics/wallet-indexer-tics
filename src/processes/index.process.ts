@@ -5,6 +5,6 @@ export * from "./deposit_withdraw.process";
 export * from "./pendingTx.process";
 export * from './process.helper';
 export * from "./statusUpdate.process";
-export * as ETH_balance_update from "./updating_balance.process"
+export * as TICS_balance_update from "./updating_balance.process"
 
 

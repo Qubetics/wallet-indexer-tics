@@ -11,11 +11,11 @@ class BlockchainHelper {
     public Web3: Web3;
     public BSC_Web3: Web3;
 
-    public FULLNODE: string = config.config.NODE.ETH_RPC_URL;
+    public FULLNODE: string = config.config.NODE.TICS_RPC_URL;
     public BSC_FULLNODE: string = config.config.NODE.BNB_RPC_URL;
     public TRX_FULLNODE: string = config.config.NODE.TRX_RPC_URL;
     public tronWeb: any;
-
+    
 
 
     constructor() {
@@ -103,8 +103,8 @@ class BlockchainHelper {
         }
     }
 
-    //ETH
-    convertWeiToEth = async (
+    //TICS
+    convertWeiToTics = async (
         value: number
     ) => {
         try {
@@ -113,7 +113,7 @@ class BlockchainHelper {
                 'ether'
             );
         } catch (error: any) {
-            console.error(`ConvertWeiToEth error >>`, error);
+            console.error(`ConvertWeiToTics error >>`, error);
             return 0;
         }
     }
@@ -208,7 +208,7 @@ class BlockchainHelper {
             let coinBalance: string = await Utility_Helper.exponentialToDecimal(tokenBalance)
             return Number(coinBalance || 0);
         } catch (error: any) {
-            console.error(`Eth_Helper Coin_Fetch_Balance error >>`, error);
+            console.error(`TICS_Helper Coin_Fetch_Balance error >>`, error);
             //return 0;
 
             throw error;

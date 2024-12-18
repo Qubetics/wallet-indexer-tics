@@ -1,21 +1,21 @@
 import { Blockchain_Helper } from "../helpers/index";
 import { config } from "../config/config";
-import ethProcessHelper from "./process.helper";
+import ticsProcessHelper from "./process.helper";
 import { KEYS } from "../enum";
 import { blocks_trnx } from "../interfaces/global_helper";
 // import rabbitMq from "../config/rabbitMq";
-import { EthOldBLockModel } from "../models";
+import { TicsOldBLockModel } from "../models";
 import { Op } from "sequelize";
 import { global_helper } from "../helpers/global_helper";
 import kafkaHelper from "../config/kafka.helper";
 
 
-class Eth_block_process {
+class Tics_block_process {
     public minBlockConfirmation: number;
     public swap: string | null;
     public approval: string | null;
-    public eth_block_tx_topic = config.KAFKA_BLOCKS.ETH_BLOCK_TX_TOPIC;
-    public eth_behind_block_tx_topic = config.KAFKA_BLOCKS.ETH_BEHIND_BLOCK_TX_TOPIC;
+    public tics_block_tx_topic = config.KAFKA_BLOCKS.TICS_BLOCK_TX_TOPIC;
+    public tics_behind_block_tx_topic = config.KAFKA_BLOCKS.TICS_BEHIND_BLOCK_TX_TOPIC;
 
     constructor() {
         this.minBlockConfirmation = Number(config.MIN_BLOCK_CONFORMATIONS);
@@ -30,45 +30,45 @@ class Eth_block_process {
             // let latestBlock = await getBlockNumber();
             // console.log("latestBlock>>", latestBlock)
             // return;
-            let old_block: any = await ethProcessHelper.getKeyValuePair(config.REDISKEYS.ETH_BLOCKS, config.REDISKEYS.OLD_BLOCK_ETH)
-            let new_block: any = await ethProcessHelper.getKeyValuePair(config.REDISKEYS.ETH_BLOCKS, config.REDISKEYS.NEW_BLOCK_ETH)
+            let old_block: any = await ticsProcessHelper.getKeyValuePair(config.REDISKEYS.TICS_BLOCKS, config.REDISKEYS.OLD_BLOCK_TICS)
+            let new_block: any = await ticsProcessHelper.getKeyValuePair(config.REDISKEYS.TICS_BLOCKS, config.REDISKEYS.NEW_BLOCK_TICS)
             if (!old_block) {
                 console.log("No block present in old block")
-                await ethProcessHelper.setBlocks(config.REDISKEYS.ETH_BLOCKS, config.REDISKEYS.OLD_BLOCK_ETH, this.minBlockConfirmation, null)
+                await ticsProcessHelper.setBlocks(config.REDISKEYS.TICS_BLOCKS, config.REDISKEYS.OLD_BLOCK_TICS, this.minBlockConfirmation, null)
             }
             if (!new_block) {
                 console.log("No block present in new block")
-                await ethProcessHelper.setBlocks(config.REDISKEYS.ETH_BLOCKS, config.REDISKEYS.NEW_BLOCK_ETH, this.minBlockConfirmation, null)
+                await ticsProcessHelper.setBlocks(config.REDISKEYS.TICS_BLOCKS, config.REDISKEYS.NEW_BLOCK_TICS, this.minBlockConfirmation, null)
             }
             if (old_block && new_block) {
                 let oldBlock: number = Number(old_block);
                 let newBlock = Number(new_block);
                 if (newBlock <= oldBlock) {
-                    await ethProcessHelper.setBlocks(config.REDISKEYS.ETH_BLOCKS, config.REDISKEYS.NEW_BLOCK_ETH, this.minBlockConfirmation, newBlock)
+                    await ticsProcessHelper.setBlocks(config.REDISKEYS.TICS_BLOCKS, config.REDISKEYS.NEW_BLOCK_TICS, this.minBlockConfirmation, newBlock)
                 } else {
                     let block_diff: number = newBlock - oldBlock;
                     if (block_diff > 50) {
-                        await ethProcessHelper.diff_blocks_add_in_db(newBlock, oldBlock)
-                        await ethProcessHelper.setKeyValuePair(config.REDISKEYS.ETH_BLOCKS, config.REDISKEYS.OLD_BLOCK_ETH, newBlock.toString())
-                        await ethProcessHelper.setBlocks(config.REDISKEYS.ETH_BLOCKS, config.REDISKEYS.NEW_BLOCK_ETH, this.minBlockConfirmation, newBlock)
+                        await ticsProcessHelper.diff_blocks_add_in_db(newBlock, oldBlock)
+                        await ticsProcessHelper.setKeyValuePair(config.REDISKEYS.TICS_BLOCKS, config.REDISKEYS.OLD_BLOCK_TICS, newBlock.toString())
+                        await ticsProcessHelper.setBlocks(config.REDISKEYS.TICS_BLOCKS, config.REDISKEYS.NEW_BLOCK_TICS, this.minBlockConfirmation, newBlock)
                     } else {
                         await this.readBlocks(oldBlock, newBlock)
                     }
                 }
             } else {
                 console.log(" no old block and no new block")
-                await global_helper.save_error_logs('Eth_setBlocks', 'No old block no new block')
+                await global_helper.save_error_logs('Tics_setBlocks', 'No old block no new block')
             }
         } catch (err: any) {
             console.error("Error in getBlocks", err)
-            await global_helper.save_error_logs('Eth_getBlocks', err.message)
+            await global_helper.save_error_logs('Tics_getBlocks', err.message)
         }
     }
     public async readBlocks(blockNumber: number, toBlockNumber: number) {
         try {
             console.log("blockNumber", blockNumber)
             let block_updated: number = blockNumber + 1;
-            await ethProcessHelper.setKeyValuePair(config.REDISKEYS.ETH_BLOCKS, config.REDISKEYS.OLD_BLOCK_ETH, block_updated.toString());
+            await ticsProcessHelper.setKeyValuePair(config.REDISKEYS.TICS_BLOCKS, config.REDISKEYS.OLD_BLOCK_TICS, block_updated.toString());
             console.log("blockNumber updated", block_updated)
             console.table({
                 LATEST_BLOCK: blockNumber,
@@ -78,7 +78,7 @@ class Eth_block_process {
             await this.getTxFromBlock(blockNumber, KEYS.latestBlock);
         } catch (err: any) {
             console.error("Error in readBlocks>>.", (err as Error).message)
-            await global_helper.save_error_logs('ETH_readBlocks', err.message)
+            await global_helper.save_error_logs('TICS_readBlocks', err.message)
         }
     }
     public async getTxFromBlock(blockId: number, key: string) {
@@ -103,11 +103,11 @@ class Eth_block_process {
                             data.key = 'latest';
                             // let queue_length: any = await rabbitMq.queue_length(config.TRANSACTIONS.eth_all_blocks)
                             // console.log("queue_length>>>", queue_length)
-                            await kafkaHelper.produceMessage(this.eth_block_tx_topic, data);
+                            await kafkaHelper.produceMessage(this.tics_block_tx_topic, data);
                             //rabbitMq.send_tx_to_queue(config.TRANSACTIONS.eth_all_blocks, Buffer.from(JSON.stringify(data)))
                         } else {
                             data.key = 'behined & specific'
-                            await kafkaHelper.produceMessage(this.eth_behind_block_tx_topic, data);
+                            await kafkaHelper.produceMessage(this.tics_behind_block_tx_topic, data);
                             //rabbitMq.send_tx_to_queue(config.KAFKA_BLOCKS.eth_behined_block_topic, Buffer.from(JSON.stringify(data)))
                         }
                     }
@@ -116,17 +116,17 @@ class Eth_block_process {
                 }
             } else {
                 console.log("No blockinfo");
-                await EthOldBLockModel.create({ block_number: blockId, coin_family: config.STATIC_COIN_FAMILY.BNB, start_block: blockId, end_block: blockId, status: 0 })
+                await TicsOldBLockModel.create({ block_number: blockId, coin_family: config.STATIC_COIN_FAMILY.BNB, start_block: blockId, end_block: blockId, status: 0 })
             }
         } catch (err: any) {
             console.error("Error in getTxFromBlock:", (err as Error).message);
-            await global_helper.save_error_logs('Eth_readBehindBlock', err.message)
+            await global_helper.save_error_logs('Tics_readBehindBlock', err.message)
         }
     }
     public async readBehindBlock() {
         try {
             // REDIS BASED
-            let data_exist: any = await ethProcessHelper.getKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_ETH)
+            let data_exist: any = await ticsProcessHelper.getKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_TICS)
             let data_exists = JSON.parse(data_exist)
             if (data_exists) {
                 console.log("This block exist in redis read behined")
@@ -144,47 +144,47 @@ class Eth_block_process {
                         end_block: end_block,
                         diff: end_block - start_block
                     }
-                    let dataaaaa_exist: any = await ethProcessHelper.setKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_ETH, JSON.stringify(add_data))
+                    let dataaaaa_exist: any = await ticsProcessHelper.setKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_TICS, JSON.stringify(add_data))
                 } else {
                     console.log("id>>>>>>>>>>>", id)
                     // await EthOldBLockModel.destroy({ where: { id: id } })
-                    await EthOldBLockModel.update({ status: 1 }, { where: { id: id } })
-                    await ethProcessHelper.deleteKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_ETH)
+                    await TicsOldBLockModel.update({ status: 1 }, { where: { id: id } })
+                    await ticsProcessHelper.deleteKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_TICS)
 
-                    let behindBlocks: any = await ethProcessHelper.behindBlocks()
+                    let behindBlocks: any = await ticsProcessHelper.behindBlocks()
 
                 }
             } else {
                 // DB BASED
-                let behindBlocks: any = await ethProcessHelper.behindBlocks()
+                let behindBlocks: any = await ticsProcessHelper.behindBlocks()
             }
 
             // REDIS BASED
-            // let data: any = await ethProcessHelper.getHashTable(config.READ_BEHINED_BLOCK_ETH)
+            // let data: any = await ticsProcessHelper.getHashTable(config.READ_BEHINED_BLOCK_ETH)
             // console.log("data?>>??", data.length)
             // if (data.length > 0) {
             //     for (let i: number = 0; i < data.length; i++) {
             //         await eth_blocks_process.getTxFromBlock(Number(data[i]), KEYS.behinedBlock);
-            //         await ethProcessHelper.deleteKeyValuePair(config.READ_BEHINED_BLOCK_ETH, data[i].toString())
+            //         await ticsProcessHelper.deleteKeyValuePair(config.READ_BEHINED_BLOCK_ETH, data[i].toString())
             //     }
             // }
         } catch (err: any) {
             console.error("Error in readBehindBlock>>", err)
-            await global_helper.save_error_logs('ETH_readBehindBlock', err.message)
+            await global_helper.save_error_logs('TICS_readBehindBlock', err.message)
         }
     }
     public async readSpecificBlock() {
         try {
             console.log("Entere into readSpecificBlock>>>")
-            let specificBlocks: any = await ethProcessHelper.getKeyValuePair(config.REDISKEYS.ALL_PROCESSES, config.REDISKEYS.SPECIFIC_BLOCK_ETH)
+            let specificBlocks: any = await ticsProcessHelper.getKeyValuePair(config.REDISKEYS.ALL_PROCESSES, config.REDISKEYS.SPECIFIC_BLOCK_TICS)
             let specific_block: any = JSON.parse(specificBlocks);
             if (specific_block && Number(specific_block) > 0) {
                 console.table({ SPECIFIC_BLOCK: specific_block })
                 await this.getTxFromBlock(specific_block, KEYS.readSpecificBlock)
-                await ethProcessHelper.setKeyValuePair(config.REDISKEYS.ALL_PROCESSES, config.REDISKEYS.SPECIFIC_BLOCK_ETH, '0')
+                await ticsProcessHelper.setKeyValuePair(config.REDISKEYS.ALL_PROCESSES, config.REDISKEYS.SPECIFIC_BLOCK_TICS, '0')
             } else {
                 console.log("Specific block is not present>>>>")
-                await ethProcessHelper.setKeyValuePair(config.REDISKEYS.ALL_PROCESSES, config.REDISKEYS.SPECIFIC_BLOCK_ETH, '0')
+                await ticsProcessHelper.setKeyValuePair(config.REDISKEYS.ALL_PROCESSES, config.REDISKEYS.SPECIFIC_BLOCK_TICS, '0')
             }
         } catch (error: any) {
             console.error("Error in readSpecificBlock>>>", error)
@@ -218,4 +218,4 @@ class Eth_block_process {
     }
 }
 
-export const eth_blocks_process = new Eth_block_process();
+export const tics_blocks_process = new Tics_block_process();

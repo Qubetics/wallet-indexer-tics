@@ -1,58 +1,58 @@
-import { ethWithdrawDepositProcess, ethPendingWithdrawalProcess, ethTxStatusUpdateProcess, eth_blocks_process, eth_tx_status_deposit_withdraw, ETH_balance_update } from "./processes/index.process"
+import { ticsWithdrawDepositProcess, ticsPendingWithdrawalProcess, ticsTxStatusUpdateProcess, tics_blocks_process, tics_tx_status_deposit_withdraw, TICS_balance_update } from "./processes/index.process"
 import schedule from "node-schedule";
-class ETHStartProcess {
+class TICSStartProcess {
   constructor() {
     this.read_block_process()
     this.readSpecificBlock()
     this.consume_read_block_queue()
-    this.ethWithdrawDepositProcess();
+    this.ticsWithdrawDepositProcess();
     this.getPendingWithdrawalTxProcess();
     this.updateTxStatusProcess();
-    this.ETHUpdateBalance();
+    this.TICSUpdateBalance();
     // this.testing_node()
   }
   public read_block_process() {
     schedule.scheduleJob("*/12 * * * * *", async function () {
-      await eth_blocks_process.getBlocks();
-      await eth_blocks_process.readBehindBlock()
+      await tics_blocks_process.getBlocks();
+      await tics_blocks_process.readBehindBlock()
     });
   }
   // public testing_node() {
   //   schedule.scheduleJob("*/2 * * * * *", async function () {
-  //     await eth_blocks_process.testingNode();
+  //     await tics_blocks_process.testingNode();
   //   });
   // }
   public readSpecificBlock() {
     schedule.scheduleJob('*/1 * * * *', async function () {
-      await eth_blocks_process.readSpecificBlock();
+      await tics_blocks_process.readSpecificBlock();
     })
   }
   public consume_read_block_queue() {
     setTimeout(async () => {
-      await eth_tx_status_deposit_withdraw.startBlockTxQueue();
-      await eth_tx_status_deposit_withdraw.startBehindBlockTxQueue();
+      await tics_tx_status_deposit_withdraw.startBlockTxQueue();
+      await tics_tx_status_deposit_withdraw.startBehindBlockTxQueue();
     }, 10000);
   }
-  public async ethWithdrawDepositProcess() {
+  public async ticsWithdrawDepositProcess() {
     setTimeout(async () => {
-      await ethWithdrawDepositProcess.startDepositQueue();
+      await ticsWithdrawDepositProcess.startDepositQueue();
     }, 10000);
   }
   public getPendingWithdrawalTxProcess() {
     schedule.scheduleJob("*/10 * * * * *", async function () {
-      await ethPendingWithdrawalProcess.getTransactionFromDB();
+      await ticsPendingWithdrawalProcess.getTransactionFromDB();
     });
   }
   public async updateTxStatusProcess() {
     setTimeout(async () => {
-      await ethTxStatusUpdateProcess.startTxStatusUpdateQueue();
+      await ticsTxStatusUpdateProcess.startTxStatusUpdateQueue();
     }, 10000);
   }
-  public async ETHUpdateBalance() {
+  public async TICSUpdateBalance() {
     setTimeout(async () => {
-      await ETH_balance_update.default.update_wallet_balance();
+      await TICS_balance_update.default.update_wallet_balance();
     }, 10000);
   }
 }
 
-new ETHStartProcess();
+new TICSStartProcess();

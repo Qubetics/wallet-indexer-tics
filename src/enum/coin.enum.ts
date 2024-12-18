@@ -5,7 +5,8 @@ export enum CoinFamilyEnum {
     BTC = 3,
     POL = 4,
     SOL = 5,
-    TRON = 6
+    TRON = 6,
+    TICS = 7
 }
 
 export enum TokenStandard {

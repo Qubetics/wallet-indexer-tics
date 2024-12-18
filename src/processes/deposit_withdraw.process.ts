@@ -2,7 +2,7 @@ import { TxType, WebHookTxType } from "../types/ERC20Tokens.types";
 import { CoinInterface, NotificationInterface, TrnxHistoryModel } from "../models";
 // import rabbitMq from "../config/rabbitMq";
 import { config } from "../config/config";
-import ethProcessHelper from "./process.helper";
+import ticsProcessHelper from "./process.helper";
 import { BlockChainStatusEnum, CoinFamilyEnum, NotificationTypeEnum, TrnxTypeEnum, TxReqTypesEnum } from "../enum";
 import { Utility_Helper, Wallet_Helper } from "../helpers"
 import { Op } from "sequelize";
@@ -11,7 +11,7 @@ import WalletModel from "../models/tables/model.wallets";
 import kafkaHelper from "../config/kafka.helper";
 
 
-class EthDepositWithdrawProcess {
+class TicsDepositWithdrawProcess {
   
   public startDepositQueue = async () => {
     let consumer = await kafkaHelper.kafka.consumer({
@@ -42,7 +42,7 @@ class EthDepositWithdrawProcess {
 
   // public startDepositQueue = async () => {
   //   await rabbitMq.consumeQueue(
-  //     config.DEPOSIT_WITHDRAW_PROCESS_ETH || "",
+  //     config.DEPOSIT_WITHDRAW_PROCESS_TICS || "",
   //     this.checkIfOurTx
   //   );
   // };
@@ -58,7 +58,7 @@ class EthDepositWithdrawProcess {
       } else if (data.isNFTToken) {
         coin_data = data.isNFTToken;
       } else {
-        coin_data = await ethProcessHelper.NativeCoinByCoinFamily(CoinFamilyEnum.ETH);
+        coin_data = await ticsProcessHelper.NativeCoinByCoinFamily(CoinFamilyEnum.TICS);
       }
       const webhookTx: WebHookTxType = {
         coin: coin_data,
@@ -149,8 +149,8 @@ class EthDepositWithdrawProcess {
       if (tx_type !== TrnxTypeEnum.WITHDRAW && checkOldTrnx && checkOldTrnx.tx_id == tx_hash) {
         tx_type = checkOldTrnx.type;
       }
-      let AddressWithdraw: any = await ethProcessHelper.check_our_wallet_address(from_address);
-      let Addressdeposit: any = await ethProcessHelper.check_our_wallet_address(to_address);
+      let AddressWithdraw: any = await ticsProcessHelper.check_our_wallet_address(from_address);
+      let Addressdeposit: any = await ticsProcessHelper.check_our_wallet_address(to_address);
 
 
       let user_id: number = AddressWithdraw ? AddressWithdraw.user_id : 0;
@@ -255,7 +255,7 @@ class EthDepositWithdrawProcess {
         );
         if (coin.is_token) {
           const native_coin: any =
-            await ethProcessHelper.NativeCoinByCoinFamily(coin.coin_family);
+            await ticsProcessHelper.NativeCoinByCoinFamily(coin.coin_family);
           await Wallet_Helper.Update_Balance(
             from_address, /// wallet_address,
             native_coin /// coin
@@ -293,4 +293,4 @@ class EthDepositWithdrawProcess {
   };
 
 }
-export const ethWithdrawDepositProcess = new EthDepositWithdrawProcess();
+export const ticsWithdrawDepositProcess = new TicsDepositWithdrawProcess();

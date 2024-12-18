@@ -9,48 +9,48 @@ export const config = {
   DB_NAME: zookeeperConfig.config.DB_NAME,
   DB_PASSWORD: zookeeperConfig.config.DB_PASSWORD,
   DB_PORT: zookeeperConfig.config.DB_PORT,
-  // DEPOSIT_WITHDRAW_PROCESS_ETH: zookeeperConfig.config.DEPOSIT_WITHDRAW_PROCESS_ETH,
-  ETH_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.ETH_WALLET_ADDRESS}`,
+  // DEPOSIT_WITHDRAW_PROCESS_TICS: zookeeperConfig.config.DEPOSIT_WITHDRAW_PROCESS_TICS,
+  TICS_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TICS_WALLET_ADDRESS}`,
   // WITHDRAW_QUEUE_BLOCKS_PROCESS: zookeeperConfig.config.WITHDRAW_QUEUE_BLOCKS_PROCESS,
   REDIS_CONN: zookeeperConfig.config.REDIS_CONN,
   KAFKA_BROKER: zookeeperConfig.config.KAFKA_BROKER,
   KAFKA_CLIENT_ID: zookeeperConfig.config.KAFKA_CLIENT_ID,
   MIN_BLOCK_CONFORMATIONS: zookeeperConfig.config.MIN_BLOCK_CONFORMATIONS,
-  TOKEN_TYPE_ETH: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_ETH}`,
-  TOKEN_TYPE721_ETH: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE721_ETH}`,
+  TOKEN_TYPE_TICS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_TICS}`,
+  TOKEN_TYPE721_TICS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE721_TICS}`,
   STATIC_COIN_FAMILY: zookeeperConfig.config.STATIC_COIN_FAMILY,
   // added new
   // KEYS: {
   //   FCM_PUSH: zookeeperConfig.config.FCM_PUSH
   // },
   REDISKEYS: {
-    ETH_BLOCKS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.ETH_BLOCKS}`,
-    OLD_BLOCK_ETH: zookeeperConfig.config.OLD_BLOCK_ETH,
-    NEW_BLOCK_ETH: zookeeperConfig.config.NEW_BLOCK_ETH,
+    TICS_BLOCKS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TICS_BLOCKS}`,
+    OLD_BLOCK_TICS: zookeeperConfig.config.OLD_BLOCK_TICS,
+    NEW_BLOCK_TICS: zookeeperConfig.config.NEW_BLOCK_TICS,
     ALL_PROCESSES: zookeeperConfig.config.ALL_PROCESSES,
-    ETH_ERROR_LOGS: zookeeperConfig.config.ETH_ERROR_LOGS,
-    NODE_ALERT_ETH: zookeeperConfig.config.NODE_ALERT_ETH,
-    SPECIFIC_BLOCK_ETH: zookeeperConfig.config.SPECIFIC_BLOCK_ETH
+    TICS_ERROR_LOGS: zookeeperConfig.config.TICS_ERROR_LOGS,
+    NODE_ALERT_TICS: zookeeperConfig.config.NODE_ALERT_TICS,
+    SPECIFIC_BLOCK_TICS: zookeeperConfig.config.SPECIFIC_BLOCK_TICS
   },
 
   /**
    * KAFKA KEYS START
    */
   KAFKA_BLOCKS: {
-    ETH_BLOCK_TX_TOPIC: zookeeperConfig.config.ETH_BLOCK_TX_TOPIC,
-    ETH_BEHIND_BLOCK_TX_TOPIC: zookeeperConfig.config.ETH_BEHIND_BLOCK_TX_TOPIC,
-    ETH_BLOCK_TX_GROUP_ID: zookeeperConfig.config.ETH_BLOCK_TX_GROUP_ID,
-    ETH_BEHIND_BLOCK_TX_GROUP_ID: zookeeperConfig.config.ETH_BEHIND_BLOCK_TX_GROUP_ID
+    TICS_BLOCK_TX_TOPIC: zookeeperConfig.config.TICS_BLOCK_TX_TOPIC,
+    TICS_BEHIND_BLOCK_TX_TOPIC: zookeeperConfig.config.TICS_BEHIND_BLOCK_TX_TOPIC,
+    TICS_BLOCK_TX_GROUP_ID: zookeeperConfig.config.TICS_BLOCK_TX_GROUP_ID,
+    TICS_BEHIND_BLOCK_TX_GROUP_ID: zookeeperConfig.config.TICS_BEHIND_BLOCK_TX_GROUP_ID
   },
   KAFKA_TRANSACTIONS: {
-    DEPOSIT_WITHDRAW_GROUP_ID: zookeeperConfig.config.ETH_DEPOSIT_WITHDRAW_GROUP_ID,
-    DEPOSIT_WITHDRAW_TOPIC: zookeeperConfig.config.ETH_DEPOSIT_WITHDRAW_TOPIC,
-    ETH_PENDING_WITHDRAWAL_TX_TOPIC: zookeeperConfig.config.ETH_PENDING_WITHDRAWAL_TX_TOPIC,
-    ETH_PENDING_WITHDRAWAL_TX_GROUP_ID: zookeeperConfig.config.ETH_PENDING_WITHDRAWAL_TX_GROUP_ID
+    DEPOSIT_WITHDRAW_GROUP_ID: zookeeperConfig.config.TICS_DEPOSIT_WITHDRAW_GROUP_ID,
+    DEPOSIT_WITHDRAW_TOPIC: zookeeperConfig.config.TICS_DEPOSIT_WITHDRAW_TOPIC,
+    TICS_PENDING_WITHDRAWAL_TX_TOPIC: zookeeperConfig.config.TICS_PENDING_WITHDRAWAL_TX_TOPIC,
+    TICS_PENDING_WITHDRAWAL_TX_GROUP_ID: zookeeperConfig.config.TICS_PENDING_WITHDRAWAL_TX_GROUP_ID
   },
   KAFKA_BALANCE: {
-    ETH_PENDING_BALANCE_UPDATE_TOPIC: zookeeperConfig.config.ETH_PENDING_BALANCE_UPDATE_TOPIC,
-    ETH_PENDING_BALANCE_UPDATE_GROUP_ID: zookeeperConfig.config.ETH_PENDING_BALANCE_UPDATE_GROUP_ID
+    TICS_PENDING_BALANCE_UPDATE_TOPIC: zookeeperConfig.config.TICS_PENDING_BALANCE_UPDATE_TOPIC,
+    TICS_PENDING_BALANCE_UPDATE_GROUP_ID: zookeeperConfig.config.TICS_PENDING_BALANCE_UPDATE_GROUP_ID
   },
   /**
    * KAFKA KEYS END
@@ -67,10 +67,11 @@ export const config = {
     BTC_RPC_URL: zookeeperConfig.config.BTC_RPC_URL,
     BTC_API_KEY: zookeeperConfig.config.BTC_API_KEY,
     TRX_RPC_URL: zookeeperConfig.config.TRX_RPC_URL,
-    TRX_API_KEY: zookeeperConfig.config.TRX_API_KEY
+    TRX_API_KEY: zookeeperConfig.config.TRX_API_KEY,
+    TICS_RPC_URL: zookeeperConfig.config.TICS_RPC_URL,
   },
   NODE_ISSUE_ALERT_EMAIL: zookeeperConfig.config.NODE_ISSUE_ALERT_EMAIL,
-  READ_BEHINED_BLOCK_ETH: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.READ_BEHINED_BLOCK_ETH}`,
+  READ_BEHINED_BLOCK_TICS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.READ_BEHINED_BLOCK_TICS}`,
   BLOCKS: zookeeperConfig.config.BLOCKS,
   CONTRACT_ABI: [
     {
