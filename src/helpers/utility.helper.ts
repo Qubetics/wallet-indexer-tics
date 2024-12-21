@@ -250,10 +250,10 @@ class UtilityHelper {
                             body: data.message ? data.message : "",
                             title: data.title ? data.title : "",
                             notification_type: data.notification_type ? data.notification_type : "",
-                            tx_id: data.tx_id ? data.tx_id?.toString() : 0,
+                            tx_id: data.tx_id ? data.tx_id?.toString() : "0",
                             tx_type: data.tx_type ? data.tx_type : "",
-                            from_user_id: data.from_user_id ? data.from_user_id?.toString() : 0,
-                            user_coin_id: data.coin_id ? data.coin_id?.toString() : 0,
+                            from_user_id: data.from_user_id ? data.from_user_id?.toString() : "0",
+                            user_coin_id: data.coin_id ? data.coin_id?.toString() : "0",
                             announcement_title: announcement_title,
                             announcement_message: announcement_message,
                         }

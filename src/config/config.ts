@@ -17,7 +17,7 @@ export const config = {
   KAFKA_CLIENT_ID: zookeeperConfig.config.KAFKA_CLIENT_ID,
   MIN_BLOCK_CONFORMATIONS: zookeeperConfig.config.MIN_BLOCK_CONFORMATIONS,
   TOKEN_TYPE_TICS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_TICS}`,
-  TOKEN_TYPE721_TICS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE721_TICS}`,
+  // TOKEN_TYPE721_TICS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE721_TICS}`,
   STATIC_COIN_FAMILY: zookeeperConfig.config.STATIC_COIN_FAMILY,
   // added new
   // KEYS: {
@@ -62,12 +62,12 @@ export const config = {
     FROM_GMAIL: zookeeperConfig.config.FROM_GMAIL
   },
   NODE: {
-    BNB_RPC_URL: zookeeperConfig.config.BNB_RPC_URL,
-    ETH_RPC_URL: zookeeperConfig.config.ETH_RPC_URL,
-    BTC_RPC_URL: zookeeperConfig.config.BTC_RPC_URL,
-    BTC_API_KEY: zookeeperConfig.config.BTC_API_KEY,
-    TRX_RPC_URL: zookeeperConfig.config.TRX_RPC_URL,
-    TRX_API_KEY: zookeeperConfig.config.TRX_API_KEY,
+    // BNB_RPC_URL: zookeeperConfig.config.BNB_RPC_URL,
+    // ETH_RPC_URL: zookeeperConfig.config.ETH_RPC_URL,
+    // BTC_RPC_URL: zookeeperConfig.config.BTC_RPC_URL,
+    // BTC_API_KEY: zookeeperConfig.config.BTC_API_KEY,
+    // TRX_RPC_URL: zookeeperConfig.config.TRX_RPC_URL,
+    // TRX_API_KEY: zookeeperConfig.config.TRX_API_KEY,
     TICS_RPC_URL: zookeeperConfig.config.TICS_RPC_URL,
   },
   NODE_ISSUE_ALERT_EMAIL: zookeeperConfig.config.NODE_ISSUE_ALERT_EMAIL,

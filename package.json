@@ -2,12 +2,12 @@
   "name": "qubetics_wallet_processes",
   "version": "1.0.0",
   "description": "Process for qubetics wallet tics blockchain",
-  "main": "index.eth.ts",
+  "main": "index.tics.ts",
   "scripts": {
     "compile": "tsc",
     "server": "nodemon --max-old-space-size=20480 build/index.tics.js",
     "dev": "concurrently \"npm run compile\" \"npm run server\"",
-    "start": "npm run compile && node build/index.eth.js"
+    "start": "npm run compile && node build/index.tics.js"
   },
   "keywords": [
     "processes"

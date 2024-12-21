@@ -3,10 +3,4 @@ build
 package-lock.json
 .vscode
 .vscode/
-.env
-bsc_bk
-bsc_old
-polymatic_bk
-btc_bk
-ltc_bk
-card_liminal
+.env 

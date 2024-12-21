@@ -12,7 +12,7 @@ import kafkaHelper from "../config/kafka.helper";
 
 
 class TicsDepositWithdrawProcess {
-  
+
   public startDepositQueue = async () => {
     let consumer = await kafkaHelper.kafka.consumer({
       groupId: config.KAFKA_TRANSACTIONS.DEPOSIT_WITHDRAW_GROUP_ID,
@@ -184,22 +184,22 @@ class TicsDepositWithdrawProcess {
 
       if (Addressdeposit) {
         let trnxTypeD: string = "Deposit";
-        switch (tx_type) {
-          case TrnxTypeEnum.SMARTCONTRACTINTERACTION:
-            trnxTypeD = "Smart Contract Interaction";
-            break;
-          case TrnxTypeEnum.APPROVE:
-            trnxTypeD = "Approval";
-            break;
-          case TrnxTypeEnum.SWAP:
-            trnxTypeD = "Swap";
-            break;
-          case TrnxTypeEnum.CROSS_CHAIN:
-            trnxTypeD = "Cross-chain Swap";
-            break;
-          default:
-            break;
-        }
+        // switch (tx_type) {
+        //   case TrnxTypeEnum.SMARTCONTRACTINTERACTION:
+        //     trnxTypeD = "Smart Contract Interaction";
+        //     break;
+        //   case TrnxTypeEnum.APPROVE:
+        //     trnxTypeD = "Approval";
+        //     break;
+        //   case TrnxTypeEnum.SWAP:
+        //     trnxTypeD = "Swap";
+        //     break;
+        //   case TrnxTypeEnum.CROSS_CHAIN:
+        //     trnxTypeD = "Cross-chain Swap";
+        //     break;
+        //   default:
+        //     break;
+        // }
         /** update to adrs wallet balance */
         let balance: any = await Wallet_Helper.Update_Balance(
           to_address, /// wallet_address,
@@ -211,7 +211,7 @@ class TicsDepositWithdrawProcess {
         )} ${coin?.coin_symbol?.toUpperCase()} has been confirmed.`;
 
         let notifData: NotificationInterface = {
-          title: NotificationTypeEnum.DEPOSIT?.toUpperCase(),
+          title: trnxTypeD?.toUpperCase(),
           message: notiMsg,
           amount: amount,
           from_user_id: user_id,
@@ -222,7 +222,7 @@ class TicsDepositWithdrawProcess {
           coin_id: coin.coin_id,
           coin_family: coin.coin_family,
           tx_type: tx_type,
-          notification_type: NotificationTypeEnum.DEPOSIT,
+          notification_type: trnxTypeD,
           state: "confirmed"
         };
         Utility_Helper.SendNotification(notifData);

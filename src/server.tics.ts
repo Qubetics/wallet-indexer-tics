@@ -12,7 +12,7 @@ class TICSStartProcess {
     // this.testing_node()
   }
   public read_block_process() {
-    schedule.scheduleJob("*/12 * * * * *", async function () {
+    schedule.scheduleJob("*/7 * * * * *", async function () {
       await tics_blocks_process.getBlocks();
       await tics_blocks_process.readBehindBlock()
     });

@@ -54,6 +54,7 @@ class TicsProcessHelper {
       console.error('setKeyValuePair >>>', err);
     }
   }
+  
   public async diff_blocks_add_in_db(current_block: number, old_block: number) {
     try {
       let value_exist: any = await this.getKeyValuePair(config.REDISKEYS.ALL_PROCESSES, config.REDISKEYS.NODE_ALERT_TICS)
@@ -62,8 +63,8 @@ class TicsProcessHelper {
         if (Number(value_exist) <= 100) {
           await this.setKeyValuePair(config.REDISKEYS.ALL_PROCESSES, config.REDISKEYS.NODE_ALERT_TICS, setvalue.toString())
           if (Number(value_exist) == 0 || Number(value_exist) == 5 || Number(value_exist) == 10 || Number(value_exist) == 20 || Number(value_exist) == 50 || Number(value_exist) == 75 || Number(value_exist) == 100) {
-            let email_body = `<p>Ethereum Node Issue ${Number(value_exist)}</p><p>Current block running = ${current_block}.</p><p>Old Block = ${old_block}.</p>`;
-            await global_helper.send_mail(config.NODE_ISSUE_ALERT_EMAIL, email_body, `Ethereum Node Issue ${Number(value_exist)}`);
+            let email_body = `<p>Qubetics Node Issue ${Number(value_exist)}</p><p>Current block running = ${current_block}.</p><p>Old Block = ${old_block}.</p>`;
+            await global_helper.send_mail(config.NODE_ISSUE_ALERT_EMAIL, email_body, `Qubetics Node Issue ${Number(value_exist)}`);
           } else {
             console.log("no email")
           }
@@ -158,7 +159,7 @@ class TicsProcessHelper {
         where: {
           coin_status: 1,
           coin_family: config.STATIC_COIN_FAMILY.TICS,
-          [Op.or]: [{ token_type: { [Op.ne]: config.TOKEN_TYPE721_TICS } }, { token_type: null }]
+          //[Op.or]: [{ token_type: { [Op.ne]: config.TOKEN_TYPE721_TICS } }, { token_type: null }]
         },
         raw: true
       })
@@ -211,36 +212,36 @@ class TicsProcessHelper {
     }
   };
 
-  public fetchERC721Tokens = async () => {
-    try {
-      const getTokenQuery = `SELECT * FROM coins WHERE coin_status=1 AND coin_family=${config.STATIC_COIN_FAMILY.TICS} AND (token_type!='${config.TOKEN_TYPE_TICS}' OR token_type is null)`;
+  // public fetchERC721Tokens = async () => {
+  //   try {
+  //     const getTokenQuery = `SELECT * FROM coins WHERE coin_status=1 AND coin_family=${config.STATIC_COIN_FAMILY.TICS} AND (token_type!='${config.TOKEN_TYPE_TICS}' OR token_type is null)`;
 
-      const tokens: CoinInterface[] = await database.db_read.query(getTokenQuery, {
-        type: Sequelize.QueryTypes.SELECT,
-      });
+  //     const tokens: CoinInterface[] = await database.db_read.query(getTokenQuery, {
+  //       type: Sequelize.QueryTypes.SELECT,
+  //     });
 
-      redisClient.set(config.TOKEN_TYPE721_TICS, JSON.stringify(tokens));
-    } catch (error: any) {
-      console.error('fetchERC721Tokens >>>>', error);
-    }
-  };
+  //     redisClient.set(config.TOKEN_TYPE721_TICS, JSON.stringify(tokens));
+  //   } catch (error: any) {
+  //     console.error('fetchERC721Tokens >>>>', error);
+  //   }
+  // };
 
-  public checkIfOurNFTContract = async (address: string) => {
-    try {
-      const getAsync = promisify(redisClient.get).bind(redisClient);
-      const value = await getAsync(config.TOKEN_TYPE721_TICS);
-      const erc721Tokens: CoinInterface[] = value ? JSON.parse(value) : [];
-      const token = erc721Tokens.find(
-        (el: any) => Number(el.is_token) === Number(BooleanEnum.true) && el.token_address.toUpperCase() === address?.toUpperCase()
-      );
+  // public checkIfOurNFTContract = async (address: string) => {
+  //   try {
+  //     const getAsync = promisify(redisClient.get).bind(redisClient);
+  //     const value = await getAsync(config.TOKEN_TYPE721_TICS);
+  //     const erc721Tokens: CoinInterface[] = value ? JSON.parse(value) : [];
+  //     const token = erc721Tokens.find(
+  //       (el: any) => Number(el.is_token) === Number(BooleanEnum.true) && el.token_address.toUpperCase() === address?.toUpperCase()
+  //     );
 
-      if (token) return token;
-      return null;
-    } catch (error: any) {
-      console.error('checkIfOurNFTContract >>>>>', error);
-      return null;
-    }
-  };
+  //     if (token) return token;
+  //     return null;
+  //   } catch (error: any) {
+  //     console.error('checkIfOurNFTContract >>>>>', error);
+  //     return null;
+  //   }
+  // };
 
   public check_our_wallet_address = async (address: string) => {
     try {

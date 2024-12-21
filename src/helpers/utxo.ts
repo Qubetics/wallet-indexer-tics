@@ -13,43 +13,43 @@ class UTXO {
     public config: any;
 
 
-    constructor() {
-        this.config = {
-            method: 'get',
-            headers: {
-                'apikey': `${config.NODE.BTC_API_KEY}`,
-                'Content-Type': 'application/json',
-            }
-        };
-        // this.btc_axios_client = axios.create({
-        //     baseURL: this.btc_client_url,
-        //     headers: {
-        //         // "api-key": this.clineAPIKEY,
-        //         "Content-Type": "application/json",
-        //     },
-        // });
-        // this.ltc_axios_client = axios.create({
-        //     baseURL: this.ltc_client_url,
-        //     headers: {
-        //         // "api-key": this.clineAPIKEY,
-        //         "Content-Type": "application/json",
-        //     },
-        // });
-    }
+    // constructor() {
+    //     this.config = {
+    //         method: 'get',
+    //         headers: {
+    //             'apikey': `${config.NODE.BTC_API_KEY}`,
+    //             'Content-Type': 'application/json',
+    //         }
+    //     };
+    //     // this.btc_axios_client = axios.create({
+    //     //     baseURL: this.btc_client_url,
+    //     //     headers: {
+    //     //         // "api-key": this.clineAPIKEY,
+    //     //         "Content-Type": "application/json",
+    //     //     },
+    //     // });
+    //     // this.ltc_axios_client = axios.create({
+    //     //     baseURL: this.ltc_client_url,
+    //     //     headers: {
+    //     //         // "api-key": this.clineAPIKEY,
+    //     //         "Content-Type": "application/json",
+    //     //     },
+    //     // });
+    // }
 
 
-    async getUserBtcBalance(address: string) {
-        try {
-            this.config.url = `${config.NODE.BTC_RPC_URL}api/v2/address/${address}`
-            const response = await axios(this.config);
-            return response.data.balance / 100000000;
-        } catch (error: any) {
-            console.error('error getUserBtcBalance >>>>>>', error);
-            // return (error as Error).message;
-            // return (error as Error).message;
-            return null;
-        }
-    }
+    // async getUserBtcBalance(address: string) {
+    //     try {
+    //         this.config.url = `${config.NODE.BTC_RPC_URL}api/v2/address/${address}`
+    //         const response = await axios(this.config);
+    //         return response.data.balance / 100000000;
+    //     } catch (error: any) {
+    //         console.error('error getUserBtcBalance >>>>>>', error);
+    //         // return (error as Error).message;
+    //         // return (error as Error).message;
+    //         return null;
+    //     }
+    // }
 
 
     // async getUserLtcBalance(address: string) {
