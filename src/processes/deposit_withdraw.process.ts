@@ -278,7 +278,7 @@ class TicsDepositWithdrawProcess {
           coin_symbol: coin.coin_symbol,
           coin_family: coin.coin_family,
           coin_id: coin.coin_id,
-          notification_type: NotificationTypeEnum.WITHDRAW,
+          notification_type: trnxTypeW,
           state: "confirmed"
         };
 
