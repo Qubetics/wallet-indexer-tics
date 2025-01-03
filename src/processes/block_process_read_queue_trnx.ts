@@ -74,7 +74,6 @@ class queue_transactions {
     // }
     public async read_trnx(data: blocks_trnx) {
         try {
-            console.log("consume started>>>", data)
             const { getTransactionReceipt } = Blockchain_Helper.Web3.eth;
             const txReceipt = await getTransactionReceipt(data.tx_id);
             if (txReceipt == null) {

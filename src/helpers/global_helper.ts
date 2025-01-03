@@ -9,17 +9,17 @@ class Global_helper {
     public async check_coin_in_wallet(wallet_address: string, coin: CoinInterface, balance: any) {
         try {
             let wallet_data: any = await WalletModel.findOne({
-                attributes: ["balance"],
+                attributes: ["balance", "user_id"],
                 where: {
                     wallet_address: wallet_address,
                     coin_id: coin.coin_id,
                 }
             })
             if (!wallet_data) {
-                let wallet_data: any = await ticsProcessHelper.check_our_wallet_address(wallet_address)
+                wallet_data = await ticsProcessHelper.check_our_wallet_address(wallet_address)
                 let data_obj: any = {
                     user_id: wallet_data.user_id,
-                    email: wallet_data.email,
+                    //email: wallet_data.email,
                     wallet_name: wallet_data.wallet_name,
                     wallet_address: wallet_address,
                     coin_id: coin.coin_id,
@@ -29,7 +29,7 @@ class Global_helper {
                     status: 1
                 }
                 await WalletModel.create(data_obj)
-            }
+            } 
 
             console.log("wallet created>>")
             if (coin.added_by) {

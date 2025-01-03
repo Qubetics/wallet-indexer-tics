@@ -1,7 +1,7 @@
 export interface WalletInterface {
   wallet_id: number;
   user_id: number;
-  email?: string,
+  // email?: string,
   wallet_name: string;
   wallet_address: string;
   coin_id: number;

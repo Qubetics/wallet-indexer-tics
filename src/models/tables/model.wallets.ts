@@ -18,10 +18,10 @@ let dataObj = {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
+  // email: {
+  //   type: DataTypes.STRING,
+  //   allowNull: true,
+  // },
   wallet_name: {
     type: DataTypes.STRING,
     allowNull: false,

@@ -104,7 +104,8 @@ class TicsTxStatusUpdateProcess {
           coin_symbol: coin_data.coin_symbol,
           coin_family: coin_data.coin_family,
           cmc_id: coin_data.cmc_id,
-          token_address: Number(coin_data.is_token) === Number(BooleanEnum.true) ? coin_data.token_address : coin_data.coin_symbol
+          token_address: Number(coin_data.is_token) === Number(BooleanEnum.true) ? coin_data.token_address : coin_data.coin_symbol,
+          added_by: coin_data.added_by,
         }
       };
       console.log(trx_data, "withdrwal");

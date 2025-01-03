@@ -5,7 +5,6 @@ import { KEYS } from "../enum";
 import { blocks_trnx } from "../interfaces/global_helper";
 // import rabbitMq from "../config/rabbitMq";
 import { TicsOldBLockModel } from "../models";
-import { Op } from "sequelize";
 import { global_helper } from "../helpers/global_helper";
 import kafkaHelper from "../config/kafka.helper";
 
@@ -66,10 +65,8 @@ class Tics_block_process {
     }
     public async readBlocks(blockNumber: number, toBlockNumber: number) {
         try {
-            console.log("blockNumber", blockNumber)
             let block_updated: number = blockNumber + 1;
             await ticsProcessHelper.setKeyValuePair(config.REDISKEYS.TICS_BLOCKS, config.REDISKEYS.OLD_BLOCK_TICS, block_updated.toString());
-            console.log("blockNumber updated", block_updated)
             console.table({
                 LATEST_BLOCK: blockNumber,
                 BLOCK_DIFFERENCE: toBlockNumber - blockNumber,
@@ -88,7 +85,6 @@ class Tics_block_process {
             if (blockInfo) {
                 if (blockInfo.transactions) {
                     for await (let tx of blockInfo.transactions) {
-                        console.log('tx.hash >>', tx.hash, 'blockId >>>', blockId);
                         let data: blocks_trnx = {
                             block_number: blockId,
                             tx_id: tx.hash ? tx.hash : '',

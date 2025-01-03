@@ -3,7 +3,7 @@ export * from "./utility.helper";
 // export * from "./web3.helper";
 export * from "./blockchain.helper";
 export * from './wallet.helper';
-export * from './utxo';
+// export * from './utxo';
 // export * from './currency.helper';
 // export * from "./redis.helper";
 // export * from "./currency.helper";

@@ -62,13 +62,7 @@ export const config = {
     FROM_GMAIL: zookeeperConfig.config.FROM_GMAIL
   },
   NODE: {
-    // BNB_RPC_URL: zookeeperConfig.config.BNB_RPC_URL,
-    // ETH_RPC_URL: zookeeperConfig.config.ETH_RPC_URL,
-    // BTC_RPC_URL: zookeeperConfig.config.BTC_RPC_URL,
-    // BTC_API_KEY: zookeeperConfig.config.BTC_API_KEY,
-    // TRX_RPC_URL: zookeeperConfig.config.TRX_RPC_URL,
-    // TRX_API_KEY: zookeeperConfig.config.TRX_API_KEY,
-    TICS_RPC_URL: zookeeperConfig.config.TICS_RPC_URL,
+    TICS_RPC_URL: zookeeperConfig.config.TICS_RPC_URL
   },
   NODE_ISSUE_ALERT_EMAIL: zookeeperConfig.config.NODE_ISSUE_ALERT_EMAIL,
   READ_BEHINED_BLOCK_TICS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.READ_BEHINED_BLOCK_TICS}`,

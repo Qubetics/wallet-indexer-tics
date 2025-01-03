@@ -23,19 +23,6 @@ class WalletHelper {
                     case CoinFamilyEnum.TICS:
                         balance = await Blockchain_Helper.Fetch_Balance(address, coin);
                         break;
-                    // case CoinFamilyEnum.BNB:
-                    //     balance = await Blockchain_Helper.Fetch_Balance_bnb(address, coin);
-                    //     break;
-                    // case CoinFamilyEnum.BTC:
-                    //     balance = Number(await utxo.getUserBtcBalance(address));
-                    //     break;
-                    // case CoinFamilyEnum.LTC:
-                    //     balance = Number(await utxo.getUserLtcBalance(address));
-                    //     break;
-                    // case CoinFamilyEnum.TRON:
-                    //     balance = Number(await Blockchain_Helper.TRX_Fetch_Balance(address, coin))
-                    //     break;
-
                     default:
                         balance = 0;
                         break;
@@ -135,11 +122,7 @@ class WalletHelper {
         }
     }
 
-
-
     // update balance queue
-
-
     public async Update_Balance_Queue(wallet_address: string, coin: CoinInterface) {
         try {
             if (!wallet_address) {
@@ -162,10 +145,6 @@ class WalletHelper {
         }
     }
 
-
-
-
-    // update balance queue
 
 }
 export let Wallet_Helper = new WalletHelper();
