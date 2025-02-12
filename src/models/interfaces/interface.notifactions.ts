@@ -12,9 +12,9 @@ export interface NotificationInterface {
   notification_type: string;
   tx_id?: number | null;
   tx_type?: string;
-  resent_count?: number | null;
+  // resent_count?: number | null;
   view_status?: string | null;
   state: string | null;
-  cmc_id?: number;
-  coin_price_in_usd?: {}
+  // cmc_id?: number;
+  // coin_price_in_usd?: {}
 }

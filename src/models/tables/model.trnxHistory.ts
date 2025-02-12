@@ -79,14 +79,14 @@ let dataObj = {
         type: DataTypes.INTEGER,
         allowNull: true
     },
-    block_hash: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    speedup: {
-        type: DataTypes.ENUM('slow', 'average', 'fast'),
-        allowNull: true
-    },
+    // block_hash: {
+    //     type: DataTypes.STRING,
+    //     allowNull: true
+    // },
+    // speedup: {
+    //     type: DataTypes.ENUM('slow', 'average', 'fast'),
+    //     allowNull: true
+    // },
     nonce: {
         type: DataTypes.INTEGER,
         allowNull: true
@@ -123,10 +123,10 @@ let dataObj = {
         type: DataTypes.STRING(191),
         allowNull: true
     },
-    country_code: {
-        type: DataTypes.STRING(191),
-        allowNull: true
-    },
+    // country_code: {
+    //     type: DataTypes.STRING(191),
+    //     allowNull: true
+    // },
 };
 
 let dataObjIndex = {
