@@ -102,7 +102,7 @@ class TicsDepositWithdrawProcess {
               [Op.like]: tx_hash,
             },
             from_adrs: {
-              [Op.like]: `%${from_address}%`,
+              [Op.like]: from_address,
             },
             coin_id: coin.coin_id,
             req_type: { [Op.notIn]: [TxReqTypesEnum.ALCHEMY, TxReqTypesEnum.TRANSAK] }
@@ -131,7 +131,7 @@ class TicsDepositWithdrawProcess {
               [Op.like]: tx_hash,
             },
             to_adrs: {
-              [Op.like]: `%${to_address}%`,
+              [Op.like]: to_address,
             },
             coin_id: coin.coin_id,
             req_type: { [Op.notIn]: [TxReqTypesEnum.ALCHEMY, TxReqTypesEnum.TRANSAK] }
