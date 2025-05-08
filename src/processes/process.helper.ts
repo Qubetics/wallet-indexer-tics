@@ -30,8 +30,7 @@ class TicsProcessHelper {
   }
   public async setBlocks(field: string, key: string, minBlockConfirmation: number, newBlock: number | null) {
     try {
-      let { getBlockNumber } = Blockchain_Helper.Web3.eth;
-      let latestBlock = await getBlockNumber();
+      let latestBlock = await Blockchain_Helper.provider.getBlockNumber();
       latestBlock = latestBlock - minBlockConfirmation;
       if (newBlock) {
         if (newBlock < latestBlock) {

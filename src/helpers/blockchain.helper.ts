@@ -1,27 +1,26 @@
-import Web3 from 'web3';
 import { BooleanEnum, TokenStandard } from "../enum";
 import { Utility_Helper } from "./utility.helper";
 import { config } from '../config';
-import { AbiItem } from 'web3-utils';
+import { ethers } from 'ethers';
 
 class BlockchainHelper {
-    public Web3: Web3;
-    public FULLNODE: string = config.config.NODE.TICS_RPC_URL;
-
+    public provider: ethers.JsonRpcProvider;
+  
     constructor() {
-        const provider = new Web3.providers.HttpProvider(this.FULLNODE);
-        this.Web3 = new Web3(provider);
+      this.provider = new ethers.JsonRpcProvider(config.config.NODE.TICS_RPC_URL || "");
+      this.initialize();
     }
+  
+  
+    public initialize() {}
 
     //TICS
     convertWeiToTics = async (
-        value: number
+        value: number | string
     ) => {
         try {
-            return this.Web3.utils.fromWei(
-                value.toString(),
-                'ether'
-            );
+            const valueAsString = value.toString();
+            return ethers.formatEther(valueAsString);;
         } catch (error: any) {
             console.error(`ConvertWeiToTics error >>`, error);
             return 0;
@@ -58,7 +57,7 @@ class BlockchainHelper {
             }
             return balance
         } catch (error: any) {
-            console.error(`Bsc_Helper BSC_Fetch_Balance error >>`, error);
+            console.error(`Tics_Helper Fetch_Balance error >>`, error);
             return null;
         }
     }
@@ -69,21 +68,24 @@ class BlockchainHelper {
     ) => {
         try {
             if (contract_address) {
-                const contract = new this.Web3.eth.Contract(
-                    config.config.CONTRACT_ABI as AbiItem[],
-                    contract_address
+                const contract = new ethers.Contract(
+                  contract_address,
+                  config.config.CONTRACT_ABI,
+                  this.provider
                 );
-                const decimals = await contract.methods.decimals().call();
-                const balance = await contract.methods.balanceOf(wallet_address).call();
+                const decimals = Number(await contract.decimals())
+                const balance = await contract.balanceOf(wallet_address);
                 const tokenBalance = await Utility_Helper.bigNumberSafeMath(
-                    balance, '/', Math.pow(10, decimals)
+                  balance.toString(),
+                  "/",
+                  Math.pow(10, decimals)
                 );
-                let tokBalance: string = await Utility_Helper.exponentialToDecimal(tokenBalance)
+                const tokBalance: string = await Utility_Helper.exponentialToDecimal(tokenBalance)
                 return Number(tokBalance);
-            }
-            return 0;
+              }
+              return 0;
         } catch (error) {
-            console.error(`BscHelper BEP20_Token_Fetch_Balance error >>`, error);
+            console.error(`Tics_Helper ERC20_Token_Fetch_Balance error >>`, error);
             // return 0;
 
             throw error;
@@ -96,16 +98,17 @@ class BlockchainHelper {
     ) => {
         try {
             if (contract_address) {
-                const contract = await new this.Web3.eth.Contract(
-                    config.config.ERC721ABI as AbiItem[],
-                    contract_address
+                const contract = new ethers.Contract(
+                contract_address,
+                config.config.ERC721ABI,
+                this.provider
                 );
-                const balance = await contract.methods.balanceOf(wallet_address).call();
-                return Number(balance);
+                const balance = await contract.balanceOf(wallet_address);
+                return Number(balance.toString());
             }
             return 0;
         } catch (error) {
-            console.error(`Bsc_Helper BEP20_Token_Fetch_Balance error >>`, error);
+            console.error(`Tics_Helper ERC20_Token_Fetch_Balance error >>`, error);
             // return 0;
             throw error;
         }
@@ -115,11 +118,14 @@ class BlockchainHelper {
         address: string
     ) => {
         try {
-            const balance: string = await this.Web3.eth.getBalance(address);
+            const balance = await this.provider.getBalance(address);
+            // const etherBalance = ethers.formatEther(balance);  //// if you don't need the Utility_Helper:
             const tokenBalance = await Utility_Helper.bigNumberSafeMath(
-                balance, '/', Math.pow(10, 18)
+                balance.toString(),
+                "/",
+                Math.pow(10, 18)
             );
-            let coinBalance: string = await Utility_Helper.exponentialToDecimal(tokenBalance)
+            const coinBalance: string = await Utility_Helper.exponentialToDecimal(tokenBalance)
             return Number(coinBalance || 0);
         } catch (error: any) {
             console.error(`TICS_Helper Coin_Fetch_Balance error >>`, error);
