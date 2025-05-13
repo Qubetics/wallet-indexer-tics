@@ -7,7 +7,7 @@ import ticsProcessHelper from "./process.helper";
 import { Op } from "sequelize";
 import { global_helper } from "../helpers/global_helper";
 import kafkaHelper from "../config/kafka.helper";
-import { ethers } from "ethers";
+import { ethers, TransactionReceipt, TransactionResponse } from "ethers";
 
 class TicsTxStatusUpdateProcess {
   // public startTxStatusUpdateQueue = async () => {
@@ -37,27 +37,27 @@ class TicsTxStatusUpdateProcess {
       // Initialize provider
       const provider = Blockchain_Helper.provider;
 
-      const transaction = await provider.getTransaction(data.tx_id);
-      
-      if (transaction.blockNumber) {
-        const transactionReceipt = await provider.getTransactionReceipt(data.tx_id);
-        
+      const transaction: TransactionResponse | null = await provider.getTransaction(data.tx_id);
+
+      if (transaction && transaction.blockNumber) {
+        const transactionReceipt: TransactionReceipt | null = await provider.getTransactionReceipt(data.tx_id);
+
         let gasReverted: number | undefined;
         const gasUsed = transactionReceipt?.gasUsed || BigInt(0);
-            const gasPrice = transaction.gasPrice || BigInt(0);
-            const gasTotal = transaction.gasLimit || BigInt(0);
+        const gasPrice = transaction.gasPrice || BigInt(0);
+        const gasTotal = transaction.gasLimit || BigInt(0);
 
         // Calculate gas in ETH (using ethers v6 formatting utils)
         const gasInTics: number = Number(
-            ethers.formatEther(gasUsed * gasPrice)
+          ethers.formatEther(gasUsed * gasPrice)
         );
 
         if (gasTotal > BigInt(0) && gasUsed > BigInt(0)) {
           const gasDiff = gasTotal - gasUsed;
           gasReverted = Number(ethers.formatEther(gasPrice * gasDiff));
-      }
+        }
 
-        if (transactionReceipt.status && transaction.blockHash != null) {
+        if (transactionReceipt && transactionReceipt?.status && transaction?.blockHash != null) {
           const txUpdate = {
             coin_id: data.coin_id,
             status: "success",
@@ -67,7 +67,7 @@ class TicsTxStatusUpdateProcess {
             tx_fee: gasInTics
           };
           await this.sendTxUpdate(txUpdate);
-        } else if (!transactionReceipt.status) {
+        } else if (transactionReceipt && transactionReceipt?.status === 0) {
           const txUpdate = {
             coin_id: data.coin_id,
             status: "failed",
