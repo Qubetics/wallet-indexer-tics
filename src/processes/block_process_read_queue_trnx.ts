@@ -103,13 +103,14 @@ class queue_transactions {
         try {
             if (txReceipt.status == 0 && txReceipt.logs.length > 0) {
                 const gasUsed = txReceipt.gasUsed ? txReceipt.gasUsed : 0;
-                const hexToNumberGasPrice: any = txReceipt?.gasPrice ? Number(txReceipt.gasPrice) : 0;
-                const gasPrice = Number(ethers.formatUnits(hexToNumberGasPrice.toString(), 9));
+                const gasPrice: any = txReceipt?.gasPrice ? Number(txReceipt.gasPrice) : 0;
+                const txFee = await Utility_Helper.bigNumberSafeMath(
+                    gasUsed, '*', gasPrice
+                )
+                //const gasPrice = Number(ethers.formatUnits(hexToNumberGasPrice.toString(), 9));
 
                 // const effectiveGasPrice: number = txReceipt?.effectiveGasPrice ? txReceipt?.effectiveGasPrice : 0;
-                const gasInTics = await Blockchain_Helper.convertWeiToTics(
-                    await Utility_Helper.bigNumberSafeMath(gasUsed, '*', gasPrice)
-                );
+                const gasInTics = await Blockchain_Helper.convertWeiToTics(txFee);
                 for await (const log of txReceipt.logs) {
                     const isToken: any = await ticsProcessHelper.checkIfContract(log.address);
                     if (isToken !== null && log.topics[2] !== undefined) {
@@ -165,13 +166,13 @@ class queue_transactions {
                 data.block_number
             ) {
                 const gasUsed = txReceipt.gasUsed ? txReceipt.gasUsed : 0;
-                const effectiveGasPrice: number = Number(txReceipt.gasPrice) || 0;
-                const gasPrice = Number(ethers.formatUnits(effectiveGasPrice.toString(), 9));
-                const gasInTics = await Blockchain_Helper.convertWeiToTics(
-                    await Utility_Helper.bigNumberSafeMath(
-                        gasUsed, '*', gasPrice
-                    )
-                );
+                const gasPrice: number = Number(txReceipt.gasPrice) || 0;
+                const txFee = await Utility_Helper.bigNumberSafeMath(
+                    gasUsed, '*', gasPrice
+                )
+
+                //const gasPrice = Number(ethers.formatUnits(effectiveGasPrice.toString(), 9));
+                const gasInTics = await Blockchain_Helper.convertWeiToTics(txFee);
                 const ethValue = await Blockchain_Helper.convertWeiToTics((data.value ? data.value : 0));
                 const amount = parseFloat(ethValue.toString());
                 const txData: TxType = {
