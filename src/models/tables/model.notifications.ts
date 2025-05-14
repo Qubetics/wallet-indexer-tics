@@ -54,9 +54,6 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  // coin_price_in_usd: {
-  //   type: DataTypes.JSON,
-  // },
   tx_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -65,10 +62,6 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  // resent_count: {
-  //   type: DataTypes.INTEGER,
-  //   allowNull: true,
-  // },
   view_status: {
     type: DataTypes.STRING,
     allowNull: true,

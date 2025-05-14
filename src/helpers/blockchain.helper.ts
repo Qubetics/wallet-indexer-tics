@@ -42,12 +42,6 @@ class BlockchainHelper {
                             coin.token_address ? coin.token_address : null/// contract_address
                         )
                         break;
-                    // case TokenStandard.ERC721:
-                    //     balance = await this.ERC721_Token_Fetch_Balance(
-                    //         address, //// wallet_address
-                    //         coin.token_address ? coin.token_address : null /// contract_address
-                    //     )
-                    //     break;
                     default:
                         balance = 0
                         break;
@@ -86,8 +80,6 @@ class BlockchainHelper {
               return 0;
         } catch (error) {
             console.error(`Tics_Helper ERC20_Token_Fetch_Balance error >>`, error);
-            // return 0;
-
             throw error;
         }
     }
@@ -109,7 +101,6 @@ class BlockchainHelper {
             return 0;
         } catch (error) {
             console.error(`Tics_Helper ERC20_Token_Fetch_Balance error >>`, error);
-            // return 0;
             throw error;
         }
     }
@@ -119,7 +110,6 @@ class BlockchainHelper {
     ) => {
         try {
             const balance = await this.provider.getBalance(address);
-            // const etherBalance = ethers.formatEther(balance);  //// if you don't need the Utility_Helper:
             const tokenBalance = await Utility_Helper.bigNumberSafeMath(
                 balance.toString(),
                 "/",
@@ -129,8 +119,6 @@ class BlockchainHelper {
             return Number(coinBalance || 0);
         } catch (error: any) {
             console.error(`TICS_Helper Coin_Fetch_Balance error >>`, error);
-            //return 0;
-
             throw error;
         }
     }
