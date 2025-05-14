@@ -112,36 +112,40 @@ class queue_transactions {
                 // const effectiveGasPrice: number = txReceipt?.effectiveGasPrice ? txReceipt?.effectiveGasPrice : 0;
                 const gasInTics = await Blockchain_Helper.convertWeiToTics(txFee);
                 for await (const log of txReceipt.logs) {
-                    const isToken: any = await ticsProcessHelper.checkIfContract(log.address);
-                    if (isToken !== null && log.topics[2] !== undefined) {
-                        if (log?.topics && log?.topics[0] == this.approval) {
+
+                    if (log?.topics && log.topics[2] !== undefined) {
+                        if (log?.topics[0] == this.approval) {
                             continue;
-                        } else if (log?.topics && log?.topics[0] == this.transfer) {
-                            const decimalPrecision = isToken.decimals.toString().length - 1;
-                            let finalAmount = await Utility_Helper.bigNumberSafeMath(log.data, '/', Math.pow(10, decimalPrecision))
-                            finalAmount = await Utility_Helper.exponentialToDecimal(finalAmount)
-                            let toAddress: string = '0x' + log.topics[2].substring(26, log.topics[2].length);
-                            /* in case of swap trnx */
-                            let fromAddress: string = '0x' + log.topics[1].substring(26, log.topics[1].length);
-                            const txData: TxType = {
-                                txId: log.transactionHash,
-                                fromAddress: fromAddress,
-                                toAddress: toAddress,
-                                token: isToken,
-                                amount: finalAmount,
-                                blockId: log.blockNumber,
-                                isNFTToken: false,
-                                txType: null,
-                                trnx_fee: Number(gasInTics)
-                            };
-                            await this.checkAddressInDB(txData);
+                        } else if (log?.topics[0] == this.transfer) {
+                            const isToken: any = await ticsProcessHelper.checkIfContract(log.address);
+                            if (isToken) {
+                                const decimalPrecision = isToken.decimals.toString().length - 1;
+                                let finalAmount = await Utility_Helper.bigNumberSafeMath(log.data, '/', Math.pow(10, decimalPrecision))
+                                finalAmount = await Utility_Helper.exponentialToDecimal(finalAmount)
+                                let toAddress: string = '0x' + log.topics[2].substring(26, log.topics[2].length);
+                                /* in case of swap trnx */
+                                let fromAddress: string = '0x' + log.topics[1].substring(26, log.topics[1].length);
+                                const txData: TxType = {
+                                    txId: log.transactionHash,
+                                    fromAddress: fromAddress,
+                                    toAddress: toAddress,
+                                    token: isToken,
+                                    amount: finalAmount,
+                                    blockId: log.blockNumber,
+                                    isNFTToken: false,
+                                    txType: null,
+                                    trnx_fee: Number(gasInTics)
+                                };
+                                await this.checkAddressInDB(txData);
+                            } else if (isToken == null) {
+                                await tics_tx_status_deposit_withdraw.check_tics_deposit(data, txReceipt)
+                            }
+
                         }
                     }
                     /** swap transaction then also check eth */
                     if (log?.topics && log?.topics[0] == this.swap) {
                         await tics_tx_status_deposit_withdraw.check_tics_deposit(data, txReceipt);
-                    } else if (isToken == null && log.topics[2] !== undefined && log?.topics[0] == this.transfer) {
-                        await tics_tx_status_deposit_withdraw.check_tics_deposit(data, txReceipt)
                     }
                 }
             } else {
@@ -170,7 +174,6 @@ class queue_transactions {
                 const txFee = await Utility_Helper.bigNumberSafeMath(
                     gasUsed, '*', gasPrice
                 )
-
                 //const gasPrice = Number(ethers.formatUnits(effectiveGasPrice.toString(), 9));
                 const gasInTics = await Blockchain_Helper.convertWeiToTics(txFee);
                 const ethValue = await Blockchain_Helper.convertWeiToTics((data.value ? data.value : 0));
