@@ -103,7 +103,6 @@ class DbHelper {
             return await DeviceTokenModel.findAll({
                 attributes: ["device_token"],
                 where: {
-                    // user_id: user_id,
                     address: {
                         [Op.like]: address,
                     },
@@ -114,7 +113,6 @@ class DbHelper {
                     ["updated_at", "DESC"],
                     ['id', 'DESC']
                 ],
-                // limit: 3,
                 raw: true
             });
         } catch (error: any) {
@@ -227,7 +225,6 @@ class DbHelper {
                 fx_name: 'save_reward',
                 error_msg: error_msg
             })
-            // return false;
         }
     }
 }

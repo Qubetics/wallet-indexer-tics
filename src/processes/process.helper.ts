@@ -1,5 +1,5 @@
 import database from "../config/db";
-import Sequelize, { QueryTypes } from "sequelize";
+import { QueryTypes } from "sequelize";
 import { CoinInterface, CoinsModel, TicsOldBLockModel, WalletInterface } from "../models";
 import redisClient from "../config/redis";
 import { promisify } from "util";
@@ -7,7 +7,6 @@ import { config } from "../config/config";
 import { BooleanEnum, CoinFamilyEnum } from "../enum";
 import { global_helper } from "../helpers/global_helper";
 import { Blockchain_Helper } from "../helpers";
-import { Op } from "sequelize";
 
 class TicsProcessHelper {
   public CoinsInterface: CoinInterface[];
@@ -15,7 +14,6 @@ class TicsProcessHelper {
 
   constructor() {
     this.fetchERC20Tokens();
-    // this.fetchERC721Tokens();
     this.fetchWalletAddress();
   }
   public async getKeyValuePair(keyName: string, field: string) {
@@ -73,26 +71,11 @@ class TicsProcessHelper {
       } else {
         await this.setKeyValuePair(config.REDISKEYS.ALL_PROCESSES, config.REDISKEYS.NODE_ALERT_TICS, '0')
       }
-      // let blocks: any = [];
-      // let dataToInsert: any = [];
-      // for (let i: any = old_block; i <= current_block; i++) {
-      // blocks.push(i)
+
       let dataToInsert = { block_number: old_block, coin_family: config.STATIC_COIN_FAMILY.TICS, start_block: old_block, end_block: current_block, status: 0 }
-      // }
       console.log("dataToInsert>>>>", dataToInsert)
-      // await EthOldBLockModel.destroy({ where: { block_number: { [Op.in]: blocks } } })
       await TicsOldBLockModel.create(dataToInsert)
       return true;
-      // REDIS BASED
-      // for (let i: any = old_block; i <= current_block; i++) {
-      //   let data_exist: any = await this.getKeyValuePair(config.READ_BEHINED_BLOCK_ETH, i.toString())
-      //   if (data_exist) {
-      //     console.log("This block exist in redis read behined", i)
-      //   } else {
-      //     await this.setKeyValuePair(config.READ_BEHINED_BLOCK_ETH, i.toString(), i.toString())
-      //   }
-      // }
-      // return true;
     } catch (err: any) {
       console.error("💥 ~ Error in diff_blocks_add_in_redis.", err)
       await global_helper.save_error_logs('TICS_diff_blocks_add_in_db', err.message)
@@ -100,31 +83,6 @@ class TicsProcessHelper {
     }
   }
 
-  // public async getLastBlockProcessed(blockNumber: number) {
-  //   try {
-  //     const getAsync = promisify(redisClient.get).bind(redisClient);
-  //     const value = await getAsync(config.LAST_BLOCK_NUMBER || "");
-  //     if (value) return parseInt(value);
-  //     redisClient.set(
-  //       config.LAST_BLOCK_NUMBER || "",
-  //       blockNumber.toString()
-  //     );
-  //   } catch (error: any) {
-  //     console.error('getLastBlockProcessed >>>', error);
-  //   }
-  // }
-
-  // public async updateLastBlockProcessed(lastBlockProcessed: number) {
-  //   try {
-  //     const updatedBlockNumber = ++lastBlockProcessed;
-  //     redisClient.set(
-  //       config.LAST_BLOCK_NUMBER || "",
-  //       updatedBlockNumber.toString()
-  //     );
-  //   } catch (error: any) {
-  //     console.error('updateLastBlockProcessed >>>>', error)
-  //   }
-  // }
   public async getHashTable(keyName: string) {
     try {
       const getAsync: any = promisify(redisClient.hvals).bind(redisClient)
@@ -158,7 +116,6 @@ class TicsProcessHelper {
         where: {
           coin_status: 1,
           coin_family: config.STATIC_COIN_FAMILY.TICS,
-          //[Op.or]: [{ token_type: { [Op.ne]: config.TOKEN_TYPE721_TICS } }, { token_type: null }]
         },
         raw: true
       })
@@ -211,37 +168,6 @@ class TicsProcessHelper {
     }
   };
 
-  // public fetchERC721Tokens = async () => {
-  //   try {
-  //     const getTokenQuery = `SELECT * FROM coins WHERE coin_status=1 AND coin_family=${config.STATIC_COIN_FAMILY.TICS} AND (token_type!='${config.TOKEN_TYPE_TICS}' OR token_type is null)`;
-
-  //     const tokens: CoinInterface[] = await database.db_read.query(getTokenQuery, {
-  //       type: Sequelize.QueryTypes.SELECT,
-  //     });
-
-  //     redisClient.set(config.TOKEN_TYPE721_TICS, JSON.stringify(tokens));
-  //   } catch (error: any) {
-  //     console.error('fetchERC721Tokens >>>>', error);
-  //   }
-  // };
-
-  // public checkIfOurNFTContract = async (address: string) => {
-  //   try {
-  //     const getAsync = promisify(redisClient.get).bind(redisClient);
-  //     const value = await getAsync(config.TOKEN_TYPE721_TICS);
-  //     const erc721Tokens: CoinInterface[] = value ? JSON.parse(value) : [];
-  //     const token = erc721Tokens.find(
-  //       (el: any) => Number(el.is_token) === Number(BooleanEnum.true) && el.token_address.toUpperCase() === address?.toUpperCase()
-  //     );
-
-  //     if (token) return token;
-  //     return null;
-  //   } catch (error: any) {
-  //     console.error('checkIfOurNFTContract >>>>>', error);
-  //     return null;
-  //   }
-  // };
-
   public check_our_wallet_address = async (address: string) => {
     try {
       let wallet_data: any = await this.getKeyValuePair(config.TICS_WALLET_ADDRESS, address);
@@ -249,7 +175,6 @@ class TicsProcessHelper {
         console.log("wallet_Data>>>>>>>>", wallet_data)
       }
       return JSON.parse(wallet_data);
-      // return address_data ? JSON.parse(address_data) : {};
     } catch (error: any) {
       console.error('check_our_wallet_address >>>>>', error);
       return null;

@@ -17,16 +17,12 @@ export interface ITrnxHistoryInterface {
     blockchain_status: BlockChainStatusEnum | null;
     amount: number;
     block_id: number;
-    // block_hash: string;
-    // speedup: string;
     nonce: number;
     tx_fee: number;
     swap_fee: number | 0;
-    // amount_in_fiat: string | null;
     gas_limit: number;
     gas_price: number;
     gas_reverted: number;
     fiat_price: number | null,
     fiat_type: string | null,
-    // country_code: string,
 }
