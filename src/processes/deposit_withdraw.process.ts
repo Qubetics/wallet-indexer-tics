@@ -50,7 +50,7 @@ class TicsDepositWithdrawProcess {
       } else if (data.isNFTToken) {
         coin_data = data.isNFTToken;
       } else {
-        coin_data = await ticsProcessHelper.NativeCoinByCoinFamily(CoinFamilyEnum.TICS);
+        coin_data = await ticsProcessHelper.checkIfContract('NativeCoin');
       }
       const webhookTx: WebHookTxType = {
         coin: coin_data,
@@ -224,7 +224,7 @@ class TicsDepositWithdrawProcess {
         );
         if (coin.is_token) {
           const native_coin: any =
-            await ticsProcessHelper.NativeCoinByCoinFamily(coin.coin_family);
+            await ticsProcessHelper.checkIfContract('NativeCoin');
           await Wallet_Helper.Update_Balance(
             from_address, /// wallet_address,
             native_coin /// coin

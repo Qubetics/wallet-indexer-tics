@@ -107,19 +107,31 @@ class TicsProcessHelper {
     }
   }
 
-
-
   public fetchERC20Tokens = async () => {
     try {
       let tokens: any = await CoinsModel.findAll({
-        attributes: ["coin_id", "coin_name", "coin_symbol", "coin_image", "coin_family", "coin_status", "is_token", "token_type", "decimals", "cmc_id", "is_on_cmc", "token_abi", "token_address", "for_swap", "added_by", "created_at", "updated_at"],
+        attributes: ["coin_id", "coin_symbol", "coin_family", "is_token", "token_type", "decimals", "token_address", "for_swap", "added_by"],
         where: {
           coin_status: 1,
           coin_family: config.STATIC_COIN_FAMILY.TICS,
         },
         raw: true
       })
-      redisClient.set(config.TOKEN_TYPE_TICS || "", JSON.stringify(tokens));
+      for await (let token of tokens) {
+        let findTokenData = await this.getKeyValuePair(
+          `${config.TOKEN_TYPE_TICS}`,
+          token.token_address.toUpperCase()
+        );
+        if (!findTokenData) {
+          this.setKeyValuePair(
+            `${config.TOKEN_TYPE_TICS}`,
+            token.token_address == null ? 'NativeCoin'.toUpperCase() : token.token_address.toUpperCase(),
+            JSON.stringify(token)
+          );
+        }
+      }
+
+      // redisClient.set(config.TOKEN_TYPE_TICS || "", JSON.stringify(tokens));
     } catch (err: any) {
       console.error('fetchERC20Tokens >>>>>', err);
       await global_helper.save_error_logs('TICS_fetchERC20Tokens', err.message)
@@ -153,20 +165,33 @@ class TicsProcessHelper {
 
   public checkIfContract = async (address: string) => {
     try {
-      const getAsync = promisify(redisClient.get).bind(redisClient);
-      const value = await getAsync(config.TOKEN_TYPE_TICS || "");
-
-      const erc20Tokens: CoinInterface[] = value ? JSON.parse(value) : [];
-      const token = erc20Tokens.find(
-        (el: any) => Number(el.is_token) === Number(BooleanEnum.true) && el.token_address?.toUpperCase() === address?.toUpperCase()
-      );
-      if (token) return token;
-      return null;
-    } catch (error: any) {
-      console.error('checkIfContract >>>', error);
+      let token_data: any = await this.getKeyValuePair(config.TOKEN_TYPE_TICS, address);
+      if (token_data) {
+        console.log("token_data>>>>>>>>", token_data)
+      }
+      return JSON.parse(token_data);
+    } catch (err: any) {
+      console.error('check_our_wallet_address >>>>>', err);
       return null;
     }
   };
+
+  // public checkIfContract = async (address: string) => {
+  //   try {
+  //     const getAsync = promisify(redisClient.get).bind(redisClient);
+  //     const value = await getAsync(config.TOKEN_TYPE_TICS || "");
+
+  //     const erc20Tokens: CoinInterface[] = value ? JSON.parse(value) : [];
+  //     const token = erc20Tokens.find(
+  //       (el: any) => Number(el.is_token) === Number(BooleanEnum.true) && el.token_address?.toUpperCase() === address?.toUpperCase()
+  //     );
+  //     if (token) return token;
+  //     return null;
+  //   } catch (error: any) {
+  //     console.error('checkIfContract >>>', error);
+  //     return null;
+  //   }
+  // };
 
   public check_our_wallet_address = async (address: string) => {
     try {
@@ -180,41 +205,41 @@ class TicsProcessHelper {
       return null;
     }
   };
-  public NativeCoinByCoinFamily = async (
-    coin_family: CoinFamilyEnum
-  ) => {
-    try {
-      const getAsync = promisify(redisClient.get).bind(redisClient);
-      const value = await getAsync(config.TOKEN_TYPE_TICS || "");
+  // public NativeCoinByCoinFamily = async (
+  //   coin_family: CoinFamilyEnum
+  // ) => {
+  //   try {
+  //     const getAsync = promisify(redisClient.get).bind(redisClient);
+  //     const value = await getAsync(config.TOKEN_TYPE_TICS || "");
 
-      const erc20Tokens: CoinInterface[] = value ? JSON.parse(value) : [];
-      return erc20Tokens.find(
-        (el: CoinInterface) => Number(el.is_token) === Number(BooleanEnum.false) && el.coin_family === coin_family
-      );
+  //     const erc20Tokens: CoinInterface[] = value ? JSON.parse(value) : [];
+  //     return erc20Tokens.find(
+  //       (el: CoinInterface) => Number(el.is_token) === Number(BooleanEnum.false) && el.coin_family === coin_family
+  //     );
 
-    } catch (error: any) {
-      console.error(`NativeCoinByCoinFamily >>>`, error);
-      return 0;
-    }
-  }
+  //   } catch (error: any) {
+  //     console.error(`NativeCoinByCoinFamily >>>`, error);
+  //     return 0;
+  //   }
+  // }
 
-  public CoinByCoinId = async (
-    coin_id: number
-  ) => {
-    try {
-      const getAsync = promisify(redisClient.get).bind(redisClient);
-      const value = await getAsync(config.TOKEN_TYPE_TICS || "");
+  // public CoinByCoinId = async (
+  //   coin_id: number
+  // ) => {
+  //   try {
+  //     const getAsync = promisify(redisClient.get).bind(redisClient);
+  //     const value = await getAsync(config.TOKEN_TYPE_TICS || "");
 
-      const erc20Tokens: CoinInterface[] = value ? JSON.parse(value) : [];
-      return erc20Tokens.find(
-        (el: CoinInterface) => el.coin_id === coin_id
-      );
+  //     const erc20Tokens: CoinInterface[] = value ? JSON.parse(value) : [];
+  //     return erc20Tokens.find(
+  //       (el: CoinInterface) => el.coin_id === coin_id
+  //     );
 
-    } catch (error: any) {
-      console.error(`CoinByCoinId >>>`, error);
-      return null;
-    }
-  }
+  //   } catch (error: any) {
+  //     console.error(`CoinByCoinId >>>`, error);
+  //     return null;
+  //   }
+  // }
   public behindBlocks = async () => {
     try {
       let behindBlocks: any = await TicsOldBLockModel.findOne({
