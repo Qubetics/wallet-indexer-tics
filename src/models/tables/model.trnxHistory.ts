@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { ITrnxHistoryInterface } from "../interfaces/interface.trnxHistory";
 import db from "../../config/db";
+import CoinsModel from "./model.coins";
 
 
 interface TrnxHistoryCreationModel extends Optional<ITrnxHistoryInterface, "id"> { }
@@ -123,6 +124,6 @@ const TrnxHistoryModel = db.db_write.define<TrnxHistoryInstance>(
     dataObj,
     dataObjIndex
 );
-
+TrnxHistoryModel.belongsTo(CoinsModel, { foreignKey: 'coin_id', targetKey: 'coin_id', as: "coin_data" });
 
 export default TrnxHistoryModel;
