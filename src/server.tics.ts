@@ -3,6 +3,7 @@ import schedule from "node-schedule";
 class TICSStartProcess {
   constructor() {
     this.read_block_process()
+    this.read_behind_block_process()
     this.readSpecificBlock()
     this.consume_read_block_queue()
     this.ticsWithdrawDepositProcess();
@@ -14,6 +15,11 @@ class TICSStartProcess {
   public read_block_process() {
     schedule.scheduleJob("*/5 * * * * *", async function () {
       await tics_blocks_process.getBlocks();
+      // await tics_blocks_process.readBehindBlock()
+    });
+  }
+  public read_behind_block_process() {
+    schedule.scheduleJob("*/6 * * * * *", async function () {
       await tics_blocks_process.readBehindBlock()
     });
   }
