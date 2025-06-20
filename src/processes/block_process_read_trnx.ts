@@ -62,9 +62,9 @@ class Tics_block_process {
             let block_updated: number = blockNumber + 1;
             await ticsProcessHelper.setKeyValuePair(config.REDISKEYS.TICS_BLOCKS, config.REDISKEYS.OLD_BLOCK_TICS, block_updated.toString());
             console.table({
-                LATEST_BLOCK: blockNumber,
+                PROCESSED_BLOCK: blockNumber,
                 BLOCK_DIFFERENCE: toBlockNumber - blockNumber,
-                TO_BLOCK_NUMBER: toBlockNumber
+                LATEST_BLOCK_NUMBER: toBlockNumber
             });
             await this.getTxFromBlock(blockNumber, KEYS.latestBlock);
         } catch (err: any) {
