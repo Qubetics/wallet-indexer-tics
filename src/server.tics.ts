@@ -1,62 +1,68 @@
-import { ticsWithdrawDepositProcess, ticsPendingWithdrawalProcess, ticsTxStatusUpdateProcess, tics_blocks_process, tics_tx_status_deposit_withdraw, TICS_balance_update } from "./processes/index.process"
+import kafkaHelper from "./config/kafka.helper";
+import { ticsWithdrawDepositProcess, ticsPendingWithdrawalProcess, ticsTxStatusUpdateProcess, ticsBlockProcess, processedBlockTransactions, updateBalanceProcess } from "./processes/index.process"
 import schedule from "node-schedule";
 class TICSStartProcess {
   constructor() {
-    this.read_block_process()
-    this.read_behind_block_process()
-    this.readSpecificBlock()
-    this.consume_read_block_queue()
-    this.ticsWithdrawDepositProcess();
-    this.getPendingWithdrawalTxProcess();
-    this.updateTxStatusProcess();
-    this.TICSUpdateBalance();
-    // this.testing_node()
+    this.connectKafka();
+    this.readBlockProcess();
+    this.readSpecificBlock();
+    this.consumeBlockTxQueue();
+    this.consumeBehindBlockTxQueue();
+    this.consumeWithdrawDepositTxsQueue();
+    this.internalTxsInQueue();
+    this.consumeInternalTxQueue();
+    this.consumeUpdateBalanceQueue();
   }
-  public read_block_process() {
-    schedule.scheduleJob("*/5 * * * * *", async function () {
-      await tics_blocks_process.getBlocks();
-      // await tics_blocks_process.readBehindBlock()
-    });
+
+  public async connectKafka() {
+    await kafkaHelper.connect();
   }
-  public read_behind_block_process() {
-    schedule.scheduleJob("*/6 * * * * *", async function () {
-      await tics_blocks_process.readBehindBlock()
+
+  public readBlockProcess() {
+    schedule.scheduleJob("*/8 * * * * *", async function () {
+      await ticsBlockProcess.readCurrentBlocks();
+      await ticsBlockProcess.readBehindBlocks();
     });
   }
   // public testing_node() {
   //   schedule.scheduleJob("*/2 * * * * *", async function () {
-  //     await tics_blocks_process.testingNode();
+  //     await ticsBlockProcess.testingNode();
   //   });
   // }
   public readSpecificBlock() {
     schedule.scheduleJob('*/1 * * * *', async function () {
-      await tics_blocks_process.readSpecificBlock();
+      await ticsBlockProcess.readSpecificBlock();
     })
   }
-  public consume_read_block_queue() {
+  public consumeBlockTxQueue() {
     setTimeout(async () => {
-      await tics_tx_status_deposit_withdraw.startBlockTxQueue();
-      await tics_tx_status_deposit_withdraw.startBehindBlockTxQueue();
+      await processedBlockTransactions.startBlockTxQueue();
+
     }, 10000);
   }
-  public async ticsWithdrawDepositProcess() {
+  public consumeBehindBlockTxQueue() {
+    setTimeout(async () => {
+      await processedBlockTransactions.startBehindBlockTxQueue();
+    }, 10000);
+  }
+  public async consumeWithdrawDepositTxsQueue() {
     setTimeout(async () => {
       await ticsWithdrawDepositProcess.startDepositQueue();
     }, 10000);
   }
-  public getPendingWithdrawalTxProcess() {
+  public internalTxsInQueue() {
     schedule.scheduleJob("*/10 * * * * *", async function () {
       await ticsPendingWithdrawalProcess.getTransactionFromDB();
     });
   }
-  public async updateTxStatusProcess() {
+  public async consumeInternalTxQueue() {
     setTimeout(async () => {
       await ticsTxStatusUpdateProcess.startTxStatusUpdateQueue();
     }, 10000);
   }
-  public async TICSUpdateBalance() {
+  public async consumeUpdateBalanceQueue() {
     setTimeout(async () => {
-      await TICS_balance_update.default.update_wallet_balance();
+      await updateBalanceProcess.updateWalletBalance();
     }, 10000);
   }
 }
