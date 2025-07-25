@@ -211,7 +211,7 @@ class TicsTxStatusUpdateProcess {
               coin_family: trx_data?.coin.coin_family,
               tx_type: tx_type,
               notification_type: trnxTypeW,
-              state: "confirmed"
+              // state: "confirmed"
             };
             Utility_Helper.SendNotification(notifData);
           }
@@ -249,7 +249,7 @@ class TicsTxStatusUpdateProcess {
               coin_family: trx_data?.coin?.coin_family,
               tx_type: tx_type,
               notification_type: trnxTypeD,
-              state: "confirmed"
+              // state: "confirmed"
             };
             Utility_Helper.SendNotification(notifData);
           }
@@ -289,7 +289,7 @@ class TicsTxStatusUpdateProcess {
             coin_family: trx_data?.coin?.coin_family,
             tx_type: tx_type,
             notification_type: NotificationTypeEnum.WITHDRAW,
-            state: "failed"
+            // state: "failed"
           };
           Utility_Helper.SendNotification(notifData);
 
