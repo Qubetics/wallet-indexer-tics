@@ -14,7 +14,7 @@ class WalletHelper {
         coin: CoinInterface,
     ) => {
         try {
-            let balance: number | null = 0;
+            let balance: number | null = null;
             if (coin) {
                 switch (coin.coin_family) {
                     case CoinFamilyEnum.TICS:
