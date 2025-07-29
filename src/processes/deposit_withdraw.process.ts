@@ -141,14 +141,14 @@ class TicsDepositWithdrawProcess {
       if (tx_type !== TrnxTypeEnum.WITHDRAW && checkOldTrnx && checkOldTrnx.tx_id == tx_hash) {
         tx_type = checkOldTrnx.type;
       }
-      let AddressWithdraw: any = await ticsProcessHelper.check_our_wallet_address(from_address);
-      let Addressdeposit: any = await ticsProcessHelper.check_our_wallet_address(to_address);
+      const AddressWithdraw: any = await ticsProcessHelper.check_our_wallet_address(from_address);
+      const Addressdeposit: any = await ticsProcessHelper.check_our_wallet_address(to_address);
 
 
-      let user_id: number = AddressWithdraw ? AddressWithdraw.user_id : 0;
-      let to_user_id: number = Addressdeposit ? Addressdeposit.user_id : 0;
+      const user_id: number = AddressWithdraw ? AddressWithdraw.user_id : 0;
+      const to_user_id: number = Addressdeposit ? Addressdeposit.user_id : 0;
 
-      let trx_data: any = {
+      const trx_data: any = {
         user_id: user_id,
         to_user_id: to_user_id,
         req_type: TxReqTypesEnum.EXNG,
@@ -171,7 +171,7 @@ class TicsDepositWithdrawProcess {
         let trnxTypeD: string = "Deposit";
 
         /** update to adrs wallet balance */
-        let balance: any = await Wallet_Helper.Update_Balance(
+        const balance: any = await Wallet_Helper.Update_Balance(
           to_address, /// wallet_address,
           coin /// coin
         );
@@ -180,7 +180,7 @@ class TicsDepositWithdrawProcess {
           amount
         )} ${coin?.coin_symbol?.toUpperCase()} has been confirmed.`;
 
-        let notifData: NotificationInterface = {
+        const notifData: NotificationInterface = {
           title: trnxTypeD?.toUpperCase(),
           message: notiMsg,
           amount: amount,
@@ -212,7 +212,7 @@ class TicsDepositWithdrawProcess {
             trnxTypeW = "Swap";
             break;
           case TrnxTypeEnum.CROSS_CHAIN:
-            trnxTypeW = "Cross-chain Swap";
+            trnxTypeW = "Cross Chain Swap";
             break;
           default:
             break;
@@ -235,7 +235,7 @@ class TicsDepositWithdrawProcess {
           amount
         )} ${coin.coin_symbol?.toUpperCase()} has been confirmed.`;
 
-        let notifData: NotificationInterface = {
+        const notifData: NotificationInterface = {
           title: NotificationTypeEnum.WITHDRAW?.toUpperCase(),
           amount: amount,
           message: notiMsg,
