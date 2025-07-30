@@ -81,6 +81,7 @@ class UpdateBalanceController {
                 ],
                 limit,
                 offset: coin_limit_count,
+                order: [['wallet_id', 'ASC']],
                 nest: true,
                 logging: true
             });
