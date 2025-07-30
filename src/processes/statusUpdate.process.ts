@@ -199,7 +199,7 @@ class TicsTxStatusUpdateProcess {
             )} ${coin_symbol.toUpperCase()} has been confirmed.`;
 
             const notifData: NotificationInterface = {
-              title: NotificationTypeEnum.WITHDRAW.toUpperCase(),
+              title: trnxTypeW.toUpperCase(),
               message: notiMsg,
               amount: amount,
               from_user_id: 0,

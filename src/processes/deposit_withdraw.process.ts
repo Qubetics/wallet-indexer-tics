@@ -236,7 +236,7 @@ class TicsDepositWithdrawProcess {
         )} ${coin.coin_symbol?.toUpperCase()} has been confirmed.`;
 
         const notifData: NotificationInterface = {
-          title: NotificationTypeEnum.WITHDRAW?.toUpperCase(),
+          title: trnxTypeW?.toUpperCase(),
           amount: amount,
           message: notiMsg,
           from_user_id: 0,
