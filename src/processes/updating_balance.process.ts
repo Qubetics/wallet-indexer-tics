@@ -49,7 +49,7 @@ class UpdateBalanceController {
             }
 
         } catch (err: any) {
-            console.error("Error in updateBalance", err)    
+            console.error("Error in updateBalance", err)
         }
     }
 
@@ -60,7 +60,7 @@ class UpdateBalanceController {
             const GLOBALBALANCEUPDATECOUNT = `WalletCount_${CoinFamilyEnum.TICS}`;
             const limit = 50;
 
-            const findCoinCounter = await ticsProcessHelper.getKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, GLOBALBALANCEUPDATECOUNT )
+            const findCoinCounter = await ticsProcessHelper.getKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, GLOBALBALANCEUPDATECOUNT)
             console.log("🚀 ~ ticsUpdateBalanceController ~ publicupdateWalletBalanceByWal ~ findCoinCounter:", findCoinCounter)
 
             if (findCoinCounter) {
@@ -68,19 +68,21 @@ class UpdateBalanceController {
             }
             console.log("🚀 ~ ticsUpdateBalanceController ~ publicupdateWalletBalanceByWal ~ coin_limit_count:", coin_limit_count)
             const wallets: any = await WalletModel.findAll({
+                attributes: ['wallet_address'],
                 where: {
                     coin_family: CoinFamilyEnum.TICS
                 },
                 include: [
                     {
                         model: CoinsModel,
-                        as: 'coin_data'
+                        as: 'coin_data',
+                        where: { is_token: 0 }
                     }
                 ],
                 limit,
                 offset: coin_limit_count,
                 nest: true,
-                logging : true
+                logging: true
             });
             if (!wallets) {
                 await ticsProcessHelper.setKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, GLOBALBALANCEUPDATECOUNT, '0')
