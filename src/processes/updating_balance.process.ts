@@ -58,7 +58,7 @@ class UpdateBalanceController {
             let coin_limit_count = 0;
 
             const GLOBALBALANCEUPDATECOUNT = `WalletCount_${CoinFamilyEnum.TICS}`;
-            const limit = 50;
+            const limit = 20;
 
             const findCoinCounter = await ticsProcessHelper.getKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, GLOBALBALANCEUPDATECOUNT)
             console.log("🚀 ~ ticsUpdateBalanceController ~ publicupdateWalletBalanceByWal ~ findCoinCounter:", findCoinCounter)

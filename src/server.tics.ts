@@ -60,10 +60,10 @@ class TICSStartProcess {
       await TICS_balance_update.default.update_wallet_balance();
     }, 10000);
   }
-  
+
   // TICS Update Balance By Wallet
   public async TICSUpdateBalanceByWallet() {
-    schedule.scheduleJob("*/5 * * * *", async function () {
+    schedule.scheduleJob("*/1 * * * *", async function () {
       // schedule.scheduleJob("*/50 * * * * *", async function () {
       await TICS_balance_update.default.updateWalletBalanceByWallet();
     });
