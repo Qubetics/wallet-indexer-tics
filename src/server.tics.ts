@@ -10,6 +10,7 @@ class TICSStartProcess {
     this.getPendingWithdrawalTxProcess();
     this.updateTxStatusProcess();
     this.TICSUpdateBalance();
+    this.TICSUpdateBalanceByWallet()
     // this.testing_node()
   }
   public read_block_process() {
@@ -58,6 +59,14 @@ class TICSStartProcess {
     setTimeout(async () => {
       await TICS_balance_update.default.update_wallet_balance();
     }, 10000);
+  }
+  
+  // TICS Update Balance By Wallet
+  public async TICSUpdateBalanceByWallet() {
+    schedule.scheduleJob("*/5 * * * *", async function () {
+      // schedule.scheduleJob("*/50 * * * * *", async function () {
+      await TICS_balance_update.default.updateWalletBalanceByWallet();
+    });
   }
 }
 

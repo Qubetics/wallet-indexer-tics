@@ -1,7 +1,10 @@
 import { config } from "../config";
 import kafkaHelper from "../config/kafka.helper";
+import { CoinFamilyEnum } from "../enum";
 import { Wallet_Helper } from "../helpers";
-import { WalletModel } from "../models";
+import { CoinsModel, WalletModel } from "../models";
+import ticsProcessHelper from "./process.helper";
+
 
 class UpdateBalanceController {
     public tics_pending_balance_update_topic = config.config.KAFKA_BALANCE.TICS_PENDING_BALANCE_UPDATE_TOPIC;
@@ -49,6 +52,67 @@ class UpdateBalanceController {
             console.error("Error in updateBalance", err)    
         }
     }
+
+    public updateWalletBalanceByWallet = async () => {
+        try {
+            let coin_limit_count = 0;
+
+            const GLOBALBALANCEUPDATECOUNT = `WalletCount_${CoinFamilyEnum.TICS}`;
+            const limit = 50;
+
+            const findCoinCounter = await ticsProcessHelper.getKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, GLOBALBALANCEUPDATECOUNT )
+            console.log("🚀 ~ ticsUpdateBalanceController ~ publicupdateWalletBalanceByWal ~ findCoinCounter:", findCoinCounter)
+
+            if (findCoinCounter) {
+                coin_limit_count = Number(findCoinCounter);
+            }
+            console.log("🚀 ~ ticsUpdateBalanceController ~ publicupdateWalletBalanceByWal ~ coin_limit_count:", coin_limit_count)
+            const wallets: any = await WalletModel.findAll({
+                where: {
+                    coin_family: CoinFamilyEnum.TICS
+                },
+                include: [
+                    {
+                        model: CoinsModel,
+                        as: 'coin_data'
+                    }
+                ],
+                limit,
+                offset: coin_limit_count,
+                nest: true,
+                logging : true
+            });
+            if (!wallets) {
+                await ticsProcessHelper.setKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, GLOBALBALANCEUPDATECOUNT, '0')
+            }
+            if (wallets.length > 0) {
+
+                for (const wallet of wallets) {
+                    const coin_data = wallet.coin_data;
+                    if (!coin_data) return false;
+                    const payload = {
+                        coin_data: coin_data,
+                        wallet_address: wallet.wallet_address,
+                        queue_count: 0,
+                    };
+
+                    await kafkaHelper.produceMessage(this.tics_pending_balance_update_topic, payload);
+                }
+            }
+            if (wallets.length < limit) {
+                console.log("inside wallets limit")
+                await ticsProcessHelper.setKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, GLOBALBALANCEUPDATECOUNT, '0')
+            } else {
+                coin_limit_count += limit;
+                console.log("incrementing cnt")
+                await ticsProcessHelper.setKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, GLOBALBALANCEUPDATECOUNT, coin_limit_count.toString())
+            }
+            console.log("\nEND")
+            return true;
+        } catch (err: any) {
+            console.error("Error in updateWalletBalanceByWallet", err)
+        }
+    };
 
 
 
