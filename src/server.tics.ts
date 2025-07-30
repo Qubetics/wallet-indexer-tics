@@ -10,6 +10,7 @@ class TICSStartProcess {
     this.getPendingWithdrawalTxProcess();
     this.updateTxStatusProcess();
     this.TICSUpdateBalance();
+    this.TICSUpdateBalanceByWallet()
     // this.testing_node()
   }
   public read_block_process() {
