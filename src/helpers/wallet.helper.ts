@@ -115,7 +115,7 @@ class WalletHelper {
     }
 
     // update balance queue
-    public async Update_Balance_Queue(wallet_address: string, coin: CoinInterface) {
+    public async fetchBalanceForAddress(wallet_address: string, coin: CoinInterface) {
         try {
             if (!wallet_address) {
                 console.error(`wallet_address missing >>> `);
@@ -131,7 +131,7 @@ class WalletHelper {
             }
             return null;
         } catch (err: any) {
-            console.error(`WalletHelper Update_Balance error >>>`, err);
+            console.error(`WalletHelper updateBalanceQueue error >>>`, err);
             return null;
         }
     }

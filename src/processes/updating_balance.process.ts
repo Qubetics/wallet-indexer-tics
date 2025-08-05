@@ -14,8 +14,8 @@ class UpdateBalanceController {
         await consumer.subscribe({ topic: this.tics_pending_balance_update_topic, fromBeginning: true });
         await consumer.run({
             eachMessage: async ({ topic, partition, message }: { topic: any, partition: any, message: any }) => {
-                console.log("🚀 ~ startTxStatusUpdateQueue topic >>>>", topic);
-                console.log("🚀 ~ startTxStatusUpdateQueue message.value >>>>", message.value.toString());
+                //console.log("🚀 ~ startTxStatusUpdateQueue topic >>>>", topic);
+                //console.log("🚀 ~ startTxStatusUpdateQueue message.value >>>>", message.value.toString());
                 await this.updateBalance(JSON.parse(message.value.toString()))
             }
         }).catch((err: Error) => {
@@ -25,28 +25,34 @@ class UpdateBalanceController {
 
     public updateBalance = async (data: any) => {
         try {
-            if (data.queue_count < 10) {
+            if (data.queue_count > 5) {
+                console.log(`Balance update attempts exceeded (5) for address: ${data.wallet_address}`);
+                return;
+            }
 
-                let balance: any = await Wallet_Helper.Update_Balance_Queue(data.wallet_address, data.coin_data);
-                if (balance !== null) {
+            const balance: any = await Wallet_Helper.fetchBalanceForAddress(data.wallet_address, data.coin_data);
+            if (balance !== null) {
+                const currentBalance = data.balance !== undefined ? Number(data.balance) : undefined;
+                if (currentBalance === undefined || currentBalance !== balance) {
+                    console.log(`Balance updated for ${data.wallet_address}: ${balance}`);
                     await WalletModel.update(
                         { balance: Number(balance) },
-                        { where: { wallet_address: data.wallet_address, coin_id: data.coin_data.coin_id } })
-                } else {
-                    if (data.queue_count <= 5) {
-                        await kafkaHelper.produceMessage(this.tics_pending_balance_update_topic, {
-                            coin_data: data.coin_data,
-                            wallet_address: data.wallet_address,
-                            queue_count: data.queue_count + 1
-                        });
-                    }
+                        { where: { wallet_address: data.wallet_address, coin_id: data.coin_data.coin_id } });
                 }
+            } else {
+                if (data.queue_count <= 5) {
+                    const queueData: any = {
+                        coin_data: data.coin_data,
+                        wallet_address: data.wallet_address,
+                        queue_count: data.queue_count + 1,
+                    }
+                    if (data.balance !== undefined) {
+                        queueData.balance = data.balance;
+                    }
+                    await kafkaHelper.produceMessage(this.tics_pending_balance_update_topic, queueData);
+                }
+            }
 
-                console.log("balance:::", balance);
-            }
-            else {
-                console.log(`updating balance attempts are more than 10 `);
-            }
 
         } catch (err: any) {
             console.error("Error in updateBalance", err)
@@ -55,38 +61,39 @@ class UpdateBalanceController {
 
     public updateWalletBalanceByWallet = async () => {
         try {
-            let coin_limit_count = 0;
+            let coinLimitCount = 0;
 
-            const GLOBALBALANCEUPDATECOUNT = `WalletCount_${CoinFamilyEnum.TICS}`;
+            const pageCounter = `WalletCount_${CoinFamilyEnum.TICS}`;
             const limit = 20;
 
-            const findCoinCounter = await ticsProcessHelper.getKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, GLOBALBALANCEUPDATECOUNT)
-            console.log("🚀 ~ ticsUpdateBalanceController ~ publicupdateWalletBalanceByWal ~ findCoinCounter:", findCoinCounter)
+            const findCoinCounter = await ticsProcessHelper.getKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, pageCounter)
+            //console.log("🚀 ~ ticsUpdateBalanceController ~ publicupdateWalletBalanceByWal ~ findCoinCounter:", findCoinCounter)
 
             if (findCoinCounter) {
-                coin_limit_count = Number(findCoinCounter);
+                coinLimitCount = Number(findCoinCounter);
             }
-            console.log("🚀 ~ ticsUpdateBalanceController ~ publicupdateWalletBalanceByWal ~ coin_limit_count:", coin_limit_count)
+            //console.log("🚀 ~ ticsUpdateBalanceController ~ publicupdateWalletBalanceByWal ~ coin_limit_count:", coinLimitCount)
             const wallets: any = await WalletModel.findAll({
-                attributes: ['wallet_address'],
+                attributes: ['wallet_address', 'balance'],
                 where: {
                     coin_family: CoinFamilyEnum.TICS
                 },
                 include: [
                     {
+                        attributes: ["coin_id", "coin_name", "coin_symbol", "coin_family", "is_token", "token_type", "token_address"],
                         model: CoinsModel,
                         as: 'coin_data',
                         where: { is_token: 0 }
                     }
                 ],
                 limit,
-                offset: coin_limit_count,
+                offset: coinLimitCount,
                 order: [['wallet_id', 'ASC']],
                 nest: true,
-                logging: true
+                // logging: true
             });
             if (!wallets) {
-                await ticsProcessHelper.setKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, GLOBALBALANCEUPDATECOUNT, '0')
+                await ticsProcessHelper.setKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, pageCounter, '0')
             }
             if (wallets.length > 0) {
 
@@ -96,6 +103,7 @@ class UpdateBalanceController {
                     const payload = {
                         coin_data: coin_data,
                         wallet_address: wallet.wallet_address,
+                        balance: wallet.balance,
                         queue_count: 0,
                     };
 
@@ -103,14 +111,14 @@ class UpdateBalanceController {
                 }
             }
             if (wallets.length < limit) {
-                console.log("inside wallets limit")
-                await ticsProcessHelper.setKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, GLOBALBALANCEUPDATECOUNT, '0')
+                // console.log("inside wallets limit")
+                await ticsProcessHelper.setKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, pageCounter, '0')
             } else {
-                coin_limit_count += limit;
-                console.log("incrementing cnt")
-                await ticsProcessHelper.setKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, GLOBALBALANCEUPDATECOUNT, coin_limit_count.toString())
+                coinLimitCount += limit;
+                // console.log("incrementing cnt")
+                await ticsProcessHelper.setKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, pageCounter, coinLimitCount.toString())
             }
-            console.log("\nEND")
+            // console.log("\nEND")
             return true;
         } catch (err: any) {
             console.error("Error in updateWalletBalanceByWallet", err)
