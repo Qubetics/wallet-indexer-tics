@@ -2,7 +2,7 @@ import { TxType, WebHookTxType } from "../types/ERC20Tokens.types";
 import { CoinInterface, NotificationInterface, TrnxHistoryModel } from "../models";
 import { config } from "../config/config";
 import ticsProcessHelper from "./process.helper";
-import { BlockChainStatusEnum, CoinFamilyEnum, NotificationTypeEnum, TrnxTypeEnum, TxReqTypesEnum } from "../enum";
+import { BlockChainStatusEnum, CoinFamilyEnum, NotificationTypeEnum, TokenStandard, TrnxTypeEnum, TxReqTypesEnum } from "../enum";
 import { Utility_Helper, Wallet_Helper } from "../helpers"
 import { Op } from "sequelize";
 import { global_helper } from "../helpers/global_helper";
@@ -48,7 +48,7 @@ class TicsDepositWithdrawProcess {
       if (data.token) {
         coin_data = data.token;
       } else if (data.isNFTToken) {
-        coin_data = data.isNFTToken;
+        coin_data = data.token;
       } else {
         coin_data = await ticsProcessHelper.checkIfContract('NativeCoin');
       }
@@ -168,17 +168,24 @@ class TicsDepositWithdrawProcess {
       const newTrnx: any = await TrnxHistoryModel.create(trx_data);
 
       if (Addressdeposit) {
-        let trnxTypeD: string = "Deposit";
+        const trnxTypeD: string = "Deposit";
 
-        /** update to adrs wallet balance */
-        const balance: any = await Wallet_Helper.Update_Balance(
-          to_address, /// wallet_address,
-          coin /// coin
-        );
-        await global_helper.check_coin_in_wallet(to_address, coin, balance)
-        const notiMsg = `${trnxTypeD} of ${await Utility_Helper.bigNumberSafeConversion(
-          amount
-        )} ${coin?.coin_symbol?.toUpperCase()} has been confirmed.`;
+        if (coin?.token_type === null || coin?.token_type?.toLowerCase() === TokenStandard.ERC20.toLowerCase()) {
+          /** update to adrs wallet balance */
+          const balance: any = await Wallet_Helper.Update_Balance(
+            to_address, /// wallet_address,
+            coin /// coin
+          );
+          await global_helper.check_coin_in_wallet(to_address, coin, balance);
+        }
+
+        const isNft = coin?.token_type?.toLowerCase() === TokenStandard.ERC721.toLowerCase() || coin?.token_type?.toLowerCase() === TokenStandard.ERC1155.toLowerCase();
+
+        const notiMsg = isNft ? `Deposit of NFT(${coin.coin_symbol.toUpperCase()}) with token id ${amount} has been confirmed.` : `${trnxTypeD} of ${await Utility_Helper.bigNumberSafeConversion(amount)} ${coin?.coin_symbol?.toUpperCase()} has been confirmed.`;
+
+        // const notiMsg = `${trnxTypeD} of ${await Utility_Helper.bigNumberSafeConversion(
+        //   amount
+        // )} ${coin?.coin_symbol?.toUpperCase()} has been confirmed.`;
 
         const notifData: NotificationInterface = {
           title: trnxTypeD?.toUpperCase(),
@@ -231,9 +238,13 @@ class TicsDepositWithdrawProcess {
           );
         }
 
-        const notiMsg = `${trnxTypeW} of ${await Utility_Helper.bigNumberSafeConversion(
-          amount
-        )} ${coin.coin_symbol?.toUpperCase()} has been confirmed.`;
+        const isNft = coin?.token_type?.toLowerCase() === TokenStandard.ERC721.toLowerCase() || coin?.token_type?.toLowerCase() === TokenStandard.ERC1155.toLowerCase();
+
+        const notiMsg = isNft ? `${trnxTypeW} request of NFT(${coin.coin_symbol.toUpperCase()}) with token id ${amount} has been confirmed.` : `${trnxTypeW} request of ${await Utility_Helper.bigNumberSafeConversion(amount)} ${coin.coin_symbol?.toUpperCase()} has been confirmed.`;
+
+        // const notiMsg = `${trnxTypeW} of ${await Utility_Helper.bigNumberSafeConversion(
+        //   amount
+        // )} ${coin.coin_symbol?.toUpperCase()} has been confirmed.`;
 
         const notifData: NotificationInterface = {
           title: trnxTypeW?.toUpperCase(),

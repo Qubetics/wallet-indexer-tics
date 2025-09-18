@@ -13,6 +13,7 @@ export const config = {
   KAFKA_CLIENT_ID: zookeeperConfig.config.KAFKA_CLIENT_ID,
   MIN_BLOCK_CONFORMATIONS: zookeeperConfig.config.MIN_BLOCK_CONFORMATIONS,
   TOKEN_TYPE_TICS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_TICS}`,
+  TICS_NFT: `${name}_${zookeeperConfig.config.SERVER}_tics_nft`,
   STATIC_COIN_FAMILY: zookeeperConfig.config.STATIC_COIN_FAMILY,
   REDISKEYS: {
     TICS_BLOCKS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TICS_BLOCKS}`,

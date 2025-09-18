@@ -85,6 +85,7 @@ class queue_transactions {
                     gasUsed, '*', gasPrice
                 )
                 const gasInTics = await Blockchain_Helper.convertWeiToTics(txFee);
+                const nftTokensAddress: any = [];
                 for await (const log of txReceipt.logs) {
 
                     if (log?.topics && log.topics[2] !== undefined) {
@@ -112,9 +113,43 @@ class queue_transactions {
                                 };
                                 await this.checkAddressInDB(txData);
                             } else if (isToken == null) {
-                                await tics_tx_status_deposit_withdraw.check_tics_deposit(data, txReceipt)
-                            }
+                                const isNFTToken = await ticsProcessHelper.checkIfOurNFTContract(log.address);
+                                if (isNFTToken) {
+                                    const transferData: any = await this.getTransferEventDetail(
+                                        isNFTToken.token_address,
+                                        log?.blockNumber
+                                    );
+                                    if (nftTokensAddress.indexOf(isNFTToken.token_address) == -1 && transferData?.length > 0) {
+                                        const gasUsed = txReceipt.gasUsed ? Number(txReceipt.gasUsed) : 0;
+                                        const hexToNumberGasPrice: any = txReceipt?.gasPrice ? Number(txReceipt.gasPrice) : 0;
+                                        const txFee = await Utility_Helper.bigNumberSafeMath(gasUsed, '*', hexToNumberGasPrice);
 
+                                        const gasInEth = await Blockchain_Helper.convertWeiToTics(txFee);
+
+                                        nftTokensAddress.push(isNFTToken.token_address);
+                                        const fromAddress = transferData[0]?.args[0];
+                                        const toAddress = transferData[0]?.args[1];
+                                        const tokenId = ethers.toNumber(transferData[0]?.args[2]);
+                                        const txData: TxType = {
+                                            txId: transferData[0].transactionHash,
+                                            fromAddress: fromAddress,
+                                            toAddress: toAddress,
+                                            token: isNFTToken,
+                                            amount: tokenId,
+                                            blockId: log?.blockNumber,
+                                            isNFTToken: true,
+                                            txType: null,
+                                            trnx_fee: Number(gasInEth)
+                                        };
+                                        await this.checkAddressInDB(txData);
+                                    } else {
+                                        return "Not get transfer data.";
+                                    }
+
+                                } else if (isNFTToken == null) {
+                                    await tics_tx_status_deposit_withdraw.check_tics_deposit(data, txReceipt)
+                                }
+                            }
                         }
                     }
                     /** swap transaction then also check eth */
@@ -130,6 +165,7 @@ class queue_transactions {
             await global_helper.save_error_logs('Tics_buildTx', error.message)
         }
     };
+
     public async check_tics_deposit(data: blocks_trnx, txReceipt: TransactionReceipt) {
         try {
             /** for check the eth deposit */
@@ -165,6 +201,7 @@ class queue_transactions {
 
         }
     }
+
     public async checkAddressInDB(txData: TxType) {
         try {
             let ourTrnx: any = null;
@@ -190,6 +227,31 @@ class queue_transactions {
             console.error("Error in checkAddressInDB>>", err)
         }
     }
+
+    public getTransferEventDetail = async (
+        tokenAddress: string,
+        blockId: number
+    ) => {
+        try {
+            const contract = new ethers.Contract(
+                tokenAddress,
+                config.ERC721ABI,
+                Blockchain_Helper.provider
+            );
+
+            const filter = contract.filters.Transfer();
+            const events = await contract.queryFilter(
+                filter,
+                blockId,
+                blockId
+            );
+
+            return events;
+        } catch (error) {
+            console.log("🔥 ~ getTransferEventDetail error", (error as Error).message);
+            return [];
+        }
+    };
     public async addTxToQueue(data: TxType, queueName: string) {
         try {
             await kafkaHelper.produceMessage(queueName, data)
