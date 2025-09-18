@@ -227,6 +227,7 @@ class TicsProcessHelper {
       }
     } catch (error) {
       console.error(`💥 ~ checkIfContract error`, error);
+      null;
     }
   };
 
