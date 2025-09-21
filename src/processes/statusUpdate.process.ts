@@ -112,6 +112,8 @@ class TicsTxStatusUpdateProcess {
         coin_data = await ticsProcessHelper.checkIfContract('NativeCoin');
       } else if (txData.coin?.token_type?.toLowerCase() == TokenStandard.ERC20) {
         coin_data = await ticsProcessHelper.checkIfContract(txData.coin.token_address);
+      } else if (txData.coin?.token_type?.toLowerCase() == TokenStandard.ERC721?.toLowerCase() || txData.coin?.token_type?.toLowerCase() == TokenStandard.ERC1155?.toLowerCase()) {
+        coin_data = await ticsProcessHelper.checkIfOurNFTContract(txData.coin.token_address);
       }
       // let coin_data: any = await CoinsModel.findOne({ attributes: ['is_token', 'token_type', 'coin_symbol', 'coin_family', 'cmc_id', 'coin_symbol', 'added_by'], where: { coin_id: txData.coin_id } });
       //let coin_data: any = await ticsProcessHelper.CoinByCoinId(txData.coin_id);
