@@ -242,7 +242,7 @@ class TicsTxStatusUpdateProcess {
 
             const isNft = trx_data?.coin?.token_type?.toLowerCase() === TokenStandard.ERC721.toLowerCase() || trx_data?.coin?.token_type?.toLowerCase() === TokenStandard.ERC1155.toLowerCase();
 
-            const notiMsg = isNft ? `Deposit of NFT(${trx_data?.coin.coin_symbol}) with token id ${amount} has been confirmed.` : `${trnxTypeD} of ${await Utility_Helper.bigNumberSafeConversion(
+            const notiMsg = isNft ? `Deposit of NFT(${trx_data?.coin?.coin_symbol?.toUpperCase()}) with token id ${amount} has been confirmed.` : `${trnxTypeD} of ${await Utility_Helper.bigNumberSafeConversion(
               amount
             )} ${trx_data?.coin?.coin_symbol.toUpperCase()} has been confirmed.`;
 
