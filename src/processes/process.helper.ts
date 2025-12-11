@@ -114,11 +114,15 @@ class TicsProcessHelper {
       let tokens: any = await CoinsModel.findAll({
         attributes: ["coin_id", "coin_symbol", "coin_family", "is_token", "token_type", "decimals", "token_address", "for_swap", "added_by"],
         where: {
-          [Op.or]: [{ token_type: TokenStandard.ERC20 }, { token_type: null }],
+          token_type: {
+            [Op.or]: [TokenStandard.ERC20, null]
+          },
+          //[Op.or]: [{ token_type: TokenStandard.ERC20 }, { token_type: null }],
           coin_status: 1,
           coin_family: config.STATIC_COIN_FAMILY.TICS,
         },
-        raw: true
+        raw: true,
+        logging: true
       })
       for await (let token of tokens) {
         let findTokenData = await this.getKeyValuePair(
