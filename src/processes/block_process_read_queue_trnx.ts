@@ -152,9 +152,28 @@ class queue_transactions {
                             }
                         }
                     }
-                    /** swap transaction then also check eth */
-                    if (log?.topics && log?.topics[0] == this.swap) {
-                        await tics_tx_status_deposit_withdraw.check_tics_deposit(data, txReceipt);
+
+                    if (log?.topics && log.topics[1] !== undefined) {
+
+                                const decimalPrecision = 18;
+                                let finalAmount = await Utility_Helper.bigNumberSafeMath(log.data, '/', Math.pow(10, decimalPrecision))
+                                finalAmount = await Utility_Helper.exponentialToDecimal(finalAmount)
+                                const toAddress: string = '0x' + log.topics[1].substring(26, log.topics[1].length);
+                                /* in case of swap trnx */
+                                const fromAddress: string = log.address;
+                                const txData: TxType = {
+                                    txId: log.transactionHash,
+                                    fromAddress: fromAddress,
+                                    toAddress: toAddress,
+                                    token: null,
+                                    amount: finalAmount,
+                                    blockId: log.blockNumber,
+                                    isNFTToken: false,
+                                    txType: null,
+                                    trnx_fee: Number(gasInTics)
+                                };
+                                await this.checkAddressInDB(txData);
+                          
                     }
                 }
             } else {
