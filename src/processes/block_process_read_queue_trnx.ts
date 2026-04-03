@@ -12,7 +12,7 @@ class queue_transactions {
     public approval: string | null;
     public swap: string | null;
     public transfer: string | null;
-
+    public tics_transfer: string | null;
     public tics_block_tx_topic = config.KAFKA_BLOCKS.TICS_BLOCK_TX_TOPIC;
     public tics_block_tx_group_id = config.KAFKA_BLOCKS.TICS_BLOCK_TX_GROUP_ID;
     public tics_behind_block_tx_topic = config.KAFKA_BLOCKS.TICS_BEHIND_BLOCK_TX_TOPIC;
@@ -23,6 +23,7 @@ class queue_transactions {
         this.approval = ethers.id('Approval(address,address,uint256)');
         this.swap = ethers.id('Swap(address,uint256,uint256,uint256,uint256,address)');
         this.transfer = ethers.id('Transfer(address,address,uint256)');
+        this.tics_transfer = ethers.id('Transfer(address,uint256)');
 
     }
 
@@ -151,13 +152,14 @@ class queue_transactions {
                                 }
                             }
                         }
-                    }
-
-                    if (log?.topics && log.topics[1] !== undefined) {
-
+                    }else if (log?.topics && log.topics[1] !== undefined  && log.topics[0] !== undefined && log.topics[0] == this.tics_transfer) {
+                                
                                 const decimalPrecision = 18;
+
                                 let finalAmount = await Utility_Helper.bigNumberSafeMath(log.data, '/', Math.pow(10, decimalPrecision))
+                               
                                 finalAmount = await Utility_Helper.exponentialToDecimal(finalAmount)
+                              
                                 const toAddress: string = '0x' + log.topics[1].substring(26, log.topics[1].length);
                                 /* in case of swap trnx */
                                 const fromAddress: string = log.address;
