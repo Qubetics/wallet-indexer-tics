@@ -5,14 +5,14 @@ import {
 
 import { NotificationModel } from "../models";
 import firebaseAdmin from 'firebase-admin';
-import { fcmServiceAccount } from "../constants/fcm.admin.key";
+import { config } from "../config";
 import { Op } from "sequelize";
 
 class UtilityHelper {
     public messaging: firebaseAdmin.messaging.Messaging;
     constructor() {
         firebaseAdmin.initializeApp({
-            credential: firebaseAdmin.credential.cert(fcmServiceAccount),
+            credential: firebaseAdmin.credential.cert(config.config.FIREBASE_SERVICE_ACCOUNT),
         });
         this.messaging = firebaseAdmin.messaging();
     }

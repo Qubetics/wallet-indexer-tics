@@ -7,7 +7,8 @@
     "compile": "tsc",
     "server": "nodemon --max-old-space-size=20480 build/index.tics.js",
     "dev": "concurrently \"npm run compile\" \"npm run server\"",
-    "start": "npm run compile && node build/index.tics.js"
+    "start": "npm run compile && node build/index.tics.js",
+    "test": "tsc && node --test test/*.test.js"
   },
   "keywords": [
     "processes"

@@ -27,7 +27,7 @@ class ZookeeprProvider {
                         }
                         if (data) {
                             this.config = JSON.parse(data.toString('utf8'));
-                            console.log(`Zookeeper connected...`, this.config);
+                            console.log(`Zookeeper connected...`);
                         }
                         resolve(true);
                     }
