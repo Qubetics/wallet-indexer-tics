@@ -37,7 +37,7 @@ let dataObj = {
         allowNull: false
     },
     req_type: {
-        type: DataTypes.ENUM('APP', 'EXNG', 'MERCURYO', 'TRANSAK', 'ALCHEMY'),
+        type: DataTypes.ENUM('APP', 'EXNG'),
         allowNull: false
     },
     from_adrs: {
