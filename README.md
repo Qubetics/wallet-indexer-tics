@@ -1,2 +1,2 @@
-# Qubetic Tics Processes
+# Qubetics TICS Processes
 
