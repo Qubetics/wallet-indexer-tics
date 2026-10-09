@@ -9,7 +9,6 @@ class TICSStartProcess {
     this.getPendingWithdrawalTxProcess();
     this.updateTxStatusProcess();
     this.TICSUpdateBalance();
-    // this.testing_node()
   }
   public read_block_process() {
     schedule.scheduleJob("*/7 * * * * *", async function () {
@@ -17,11 +16,6 @@ class TICSStartProcess {
       await tics_blocks_process.readBehindBlock()
     });
   }
-  // public testing_node() {
-  //   schedule.scheduleJob("*/2 * * * * *", async function () {
-  //     await tics_blocks_process.testingNode();
-  //   });
-  // }
   public readSpecificBlock() {
     schedule.scheduleJob('*/1 * * * *', async function () {
       await tics_blocks_process.readSpecificBlock();
