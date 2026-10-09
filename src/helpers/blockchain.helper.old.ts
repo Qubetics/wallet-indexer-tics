@@ -83,26 +83,6 @@ class BlockchainHelper {
         }
     }
 
-    private ERC721_Token_Fetch_Balance = async (
-        wallet_address: string,
-        contract_address: string | null
-    ) => {
-        try {
-            if (contract_address) {
-                const contract = await new this.Web3.eth.Contract(
-                    config.config.ERC721ABI as AbiItem[],
-                    contract_address
-                );
-                const balance = await contract.methods.balanceOf(wallet_address).call();
-                return Number(balance);
-            }
-            return 0;
-        } catch (error) {
-            console.error(`Bsc_Helper BEP20_Token_Fetch_Balance error >>`, error);
-            throw error;
-        }
-    }
-
     public Coin_Fetch_Balance = async (
         address: string
     ) => {
