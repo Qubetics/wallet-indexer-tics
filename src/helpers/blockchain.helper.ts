@@ -81,7 +81,6 @@ class BlockchainHelper {
         } catch (error) {
             console.error(`Tics_Helper ERC20_Token_Fetch_Balance error >>`, error);
             return null;
-            // throw error;
         }
     }
 
@@ -103,7 +102,6 @@ class BlockchainHelper {
         } catch (error) {
             console.error(`Tics_Helper ERC20_Token_Fetch_Balance error >>`, error);
             return null;
-            // throw error;
         }
     }
 
@@ -122,10 +120,8 @@ class BlockchainHelper {
         } catch (error: any) {
             console.error(`TICS_Helper Coin_Fetch_Balance error >>`, error);
             return null;
-            // throw error;
         }
     }
-
 
 
 }

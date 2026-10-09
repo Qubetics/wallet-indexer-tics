@@ -13,5 +13,4 @@ export interface NotificationInterface {
   tx_id?: number | null;
   tx_type?: string;
   view_status?: string | null;
-  // state: string | null;
 }

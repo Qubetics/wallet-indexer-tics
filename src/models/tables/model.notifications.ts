@@ -66,10 +66,6 @@ let dataObj = {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  // state: {
-  //   type: DataTypes.STRING,
-  //   allowNull: true,
-  // }
 };
 
 let dataObjIndex = {

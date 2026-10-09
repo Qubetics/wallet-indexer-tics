@@ -113,8 +113,6 @@ class TicsTxStatusUpdateProcess {
       } else if (txData.coin?.token_type?.toLowerCase() == TokenStandard.ERC20) {
         coin_data = await ticsProcessHelper.checkIfContract(txData.coin.token_address);
       }
-      // let coin_data: any = await CoinsModel.findOne({ attributes: ['is_token', 'token_type', 'coin_symbol', 'coin_family', 'cmc_id', 'coin_symbol', 'added_by'], where: { coin_id: txData.coin_id } });
-      //let coin_data: any = await ticsProcessHelper.CoinByCoinId(txData.coin_id);
       const trx_data = {
         coin_id: txData?.coin.coin_id,
         status: txData?.status,
@@ -211,7 +209,6 @@ class TicsTxStatusUpdateProcess {
               coin_family: trx_data?.coin.coin_family,
               tx_type: tx_type,
               notification_type: trnxTypeW,
-              // state: "confirmed"
             };
             Utility_Helper.SendNotification(notifData);
           }
@@ -249,7 +246,6 @@ class TicsTxStatusUpdateProcess {
               coin_family: trx_data?.coin?.coin_family,
               tx_type: tx_type,
               notification_type: trnxTypeD,
-              // state: "confirmed"
             };
             Utility_Helper.SendNotification(notifData);
           }
@@ -289,7 +285,6 @@ class TicsTxStatusUpdateProcess {
             coin_family: trx_data?.coin?.coin_family,
             tx_type: tx_type,
             notification_type: NotificationTypeEnum.WITHDRAW,
-            // state: "failed"
           };
           Utility_Helper.SendNotification(notifData);
 
