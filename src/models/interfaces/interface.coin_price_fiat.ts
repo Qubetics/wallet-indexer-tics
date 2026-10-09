@@ -17,11 +17,4 @@ export interface CoinPriceInFiatInterface {
     token_address?: string;
     max_supply?: number;
     latest_price: string | null;
-    // roi?: number;
-    // open?: number;
-    // high?: number;
-    // average?: number;
-    // close?: number;
-    // low?: number;
-    // change_price?: number;
 }

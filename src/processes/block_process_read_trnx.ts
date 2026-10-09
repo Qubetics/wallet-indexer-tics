@@ -3,7 +3,6 @@ import { config } from "../config/config";
 import ticsProcessHelper from "./process.helper";
 import { KEYS } from "../enum";
 import { blocks_trnx } from "../interfaces/global_helper";
-// import rabbitMq from "../config/rabbitMq";
 import { TicsOldBLockModel } from "../models";
 import { global_helper } from "../helpers/global_helper";
 import kafkaHelper from "../config/kafka.helper";
@@ -25,10 +24,6 @@ class Tics_block_process {
     public async getBlocks() {
         try {
             /** Testing */
-            // let { getBlockNumber } = Blockchain_Helper..eth;
-            // let latestBlock = await getBlockNumber();
-            // console.log("latestBlock>>", latestBlock)
-            // return;
             let old_block: any = await ticsProcessHelper.getKeyValuePair(config.REDISKEYS.TICS_BLOCKS, config.REDISKEYS.OLD_BLOCK_TICS)
             let new_block: any = await ticsProcessHelper.getKeyValuePair(config.REDISKEYS.TICS_BLOCKS, config.REDISKEYS.NEW_BLOCK_TICS)
             if (!old_block) {
@@ -97,14 +92,10 @@ class Tics_block_process {
                         }
                         if (key == KEYS.latestBlock) {
                             data.key = 'latest';
-                            // let queue_length: any = await rabbitMq.queue_length(config.TRANSACTIONS.eth_all_blocks)
-                            // console.log("queue_length>>>", queue_length)
                             await kafkaHelper.produceMessage(this.tics_block_tx_topic, data);
-                            //rabbitMq.send_tx_to_queue(config.TRANSACTIONS.eth_all_blocks, Buffer.from(JSON.stringify(data)))
                         } else {
                             data.key = 'behined & specific'
                             await kafkaHelper.produceMessage(this.tics_behind_block_tx_topic, data);
-                            //rabbitMq.send_tx_to_queue(config.KAFKA_BLOCKS.eth_behined_block_topic, Buffer.from(JSON.stringify(data)))
                         }
                     }
                 } else {
@@ -143,7 +134,6 @@ class Tics_block_process {
                     let dataaaaa_exist: any = await ticsProcessHelper.setKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_TICS, JSON.stringify(add_data))
                 } else {
                     console.log("id>>>>>>>>>>>", id)
-                    // await EthOldBLockModel.destroy({ where: { id: id } })
                     await TicsOldBLockModel.update({ status: 1 }, { where: { id: id } })
                     await ticsProcessHelper.deleteKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_TICS)
 
@@ -155,15 +145,6 @@ class Tics_block_process {
                 let behindBlocks: any = await ticsProcessHelper.behindBlocks()
             }
 
-            // REDIS BASED
-            // let data: any = await ticsProcessHelper.getHashTable(config.READ_BEHINED_BLOCK_ETH)
-            // console.log("data?>>??", data.length)
-            // if (data.length > 0) {
-            //     for (let i: number = 0; i < data.length; i++) {
-            //         await eth_blocks_process.getTxFromBlock(Number(data[i]), KEYS.behinedBlock);
-            //         await ticsProcessHelper.deleteKeyValuePair(config.READ_BEHINED_BLOCK_ETH, data[i].toString())
-            //     }
-            // }
         } catch (err: any) {
             console.error("Error in readBehindBlock>>", err)
             await global_helper.save_error_logs('TICS_readBehindBlock', err.message)

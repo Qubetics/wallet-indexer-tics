@@ -1,6 +1,5 @@
 import redis from "redis";
 import { config } from "./config";
-// import { configuration } from ".";
 
 class RedisServer {
   public client: redis.RedisClient;

@@ -1,20 +1,12 @@
 import BigNumber from "bignumber.js";
-// import FCM from 'fcm-push';
-// /import FCM from 'fcm-node'
-// var FCM = require("fcm-node");
 
 
 import {
     Db_Helper
 } from ".";
 
-// import {
-//     config
-// } from "../config/config";
 
 import { NotificationModel } from "../models";
-// const firebaseAdmin = require("firebase-admin");
-// import fcmServiceAccount from "../constants/fcm.admin.key.json";
 import firebaseAdmin from 'firebase-admin';
 import { fcmServiceAccount } from "../constants/fcm.admin.key";
 import { Op } from "sequelize";
@@ -26,14 +18,7 @@ class UtilityHelper {
             credential: firebaseAdmin.credential.cert(fcmServiceAccount),
         });
         this.messaging = firebaseAdmin.messaging();
-        // (async () => {
-        //     await firebaseAdmin.initializeApp({
-        //         credential: firebaseAdmin.credential.cert(fcmServiceAccount),
-        //     });
-        // })();
     }
-    //    public REDIS_BLOCKS: string = `${CONFIG.REDISKEYS.BLOCKS}_${CONFIG.COIN_FAMILY_TICS}`;
-    // public FCM_SERVER_KEY: any = config.KEYS.FCM_PUSH;
 
     bigNumberSafeMath = async (c: any, operation: any, d: any) => {
         18;
@@ -56,7 +41,6 @@ class UtilityHelper {
                 rtn = a.dividedBy(b);
                 break;
             default:
-                //operator = operation;
                 break;
         }
         return rtn.toString();
@@ -104,123 +88,6 @@ class UtilityHelper {
         return decimal;
     }
 
-    //    UpdateBlockNumber = async (
-    //       block_number: number
-    //    ) => {
-    //       Redis_Helper.SetHashTable(
-    //          this.REDIS_BLOCKS, // key
-    //          BlocksKeysEnum.OLD_READ,// field
-    //          JSON.stringify(Number(block_number)) // value 
-    //       );
-
-    //       /** next block to read */
-    //       Redis_Helper.SetHashTable(
-    //          this.REDIS_BLOCKS, // key
-    //          BlocksKeysEnum.NEXT_READ,// field
-    //          JSON.stringify(++block_number) // value 
-    //       );
-    //       return true;
-    //    }
-
-    // SendNotificationold = async (
-    //     data: any
-    // ) => {
-    //     try {
-    //         let toUserId: number = data.to_user_id ? data.to_user_id : 0;
-
-    //         let deviceTokens: any = await Db_Helper.GetDeviceTokens(toUserId);
-    //         let device_tokens = [];
-
-    //         for await (let deviceToken of deviceTokens) {
-    //             device_tokens.push(deviceToken.device_token);
-    //         }
-
-    //         if (device_tokens && this.FCM_SERVER_KEY) {
-    //             let announcement_title: string = data.announcement_title == undefined ? "" : data.announcement_title;
-    //             let announcement_message: string = data.announcement_message == undefined ? "" : data.announcement_message;
-    //             let fcm = new FCM(this.FCM_SERVER_KEY);
-    //             let message;
-    //             if (Array.isArray(device_tokens)) {
-    //                 message = {
-    //                     registration_ids: device_tokens,
-    //                     collapse_key: "type_a",
-    //                     notification: {
-    //                         title: data.title,
-    //                         body: data.message,
-    //                         sound: "default",
-    //                     },
-    //                     data: {
-    //                         body: data.message,
-    //                         title: data.title,
-    //                         notification_type: data.notification_type,
-    //                         tx_id: data.tx_id ? data.tx_id : 0,
-    //                         tx_type: data.tx_type,
-    //                         from_user_id: data.from_user_id ? data.from_user_id : 0,
-    //                         user_coin_id: data.coin_id ? data.coin_id : 0,
-    //                         announcement_title: announcement_title,
-    //                         announcement_message: announcement_message,
-    //                     },
-    //                 };
-    //             } else {
-    //                 message = {
-    //                     to: device_tokens,
-    //                     collapse_key: "type_a",
-    //                     notification: {
-    //                         title: data.title,
-    //                         body: data.message,
-    //                         sound: "default",
-    //                     },
-    //                     data: {
-    //                         body: data.message,
-    //                         title: data.title,
-    //                         notification_type: data.notification_type,
-    //                         tx_id: data.tx_id ? data.tx_id : 0,
-    //                         tx_type: data.tx_type,
-    //                         from_user_id: data.from_user_id ? data.from_user_id : 0,
-    //                         user_coin_id: data.coin_id ? data.coin_id : 0,
-    //                         announcement_title: announcement_title,
-    //                         announcement_message: announcement_message,
-    //                     },
-    //                 };
-    //             }
-    //             fcm.send(message, function (err: any, messageId: number) {
-    //                 if (err) {
-    //                     console.error("Something has gone wrong!", err);
-    //                 }
-    //                 console.debug(`fcm push notification >>`, messageId);
-    //             });
-    //         }
-    //         const checkOldNotif: any = await NotificationModel.count({
-    //             where: {
-    //                 to_user_id: toUserId,
-    //                 notification_type: data.notification_type,
-    //                 tx_id: data.tx_id,
-    //                 tx_type: data.tx_type
-    //             }
-    //         });
-    //         if (checkOldNotif == 0) {
-    //             let notificationModel: any = {
-    //                 message: data.message,
-    //                 from_user_id: data.from_user_id ? data.from_user_id : 0,
-    //                 amount: data.amount,
-    //                 to_user_id: toUserId,
-    //                 coin_symbol: data.coin_symbol,
-    //                 notification_type: data.notification_type,
-    //                 tx_id: data.tx_id,
-    //                 coin_id: data.coin_id,
-    //                 wallet_address: data.wallet_address,
-    //                 tx_type: data.notification_type,
-    //                 view_status: "0",
-    //                 state: "0",
-    //             }
-    //             await NotificationModel.create(notificationModel);
-    //         }
-    //         return true;
-    //     } catch (error: any) {
-    //         console.error(`SendNotification error >>>`, error);
-    //         return false;
-    //     }
-    // };
 
     public async SendNotification(data: any) {
         try {
@@ -235,7 +102,6 @@ class UtilityHelper {
             if (finalDeviceTokens?.length > 0) {
                 let announcement_title: string = data.announcement_title == undefined ? "" : data.announcement_title;
                 let announcement_message: string = data.announcement_message == undefined ? "" : data.announcement_message;
-                // const messaging = firebaseAdmin.messaging();
                 const notification = {
                     title: data.title,
                     body: data.message,
@@ -244,7 +110,6 @@ class UtilityHelper {
                 this.messaging
                     .sendEachForMulticast({
                         tokens: finalDeviceTokens,
-                        // collapse_key: "type_a",
                         notification: notification,
                         data: {
                             body: data.message ? data.message : "",
@@ -268,22 +133,6 @@ class UtilityHelper {
                         );
                     });
 
-                // if (Array.isArray(finalDeviceTokens)) {
-                //     messaging.sendMulticast({ tokens: finalDeviceTokens, notification: notification})
-                //         .then((response: any) => {
-                //             console.log("💥🚀 ~ firebase admin push notification", response);
-                //         })
-                //         .catch((error: any) => {
-                //             console.error("💥 ~ firebase admin sending notification error", error);
-                //         });
-                // } else {
-                //     messaging.send({ token: finalDeviceTokens, notification: notification })
-                //         .then((response: any) => {
-                //             console.log("💥🚀 ~ firebase admin push notification", response);
-                //         }).catch((error: any) => {
-                //             console.error("💥 ~ firebase admin sending notification error", error);
-                //         });
-                // }
             }
 
             /* save notification */
@@ -292,7 +141,6 @@ class UtilityHelper {
                     wallet_address: { [Op.like]: data.wallet_address },
                     notification_type: data.notification_type,
                     tx_id: data.tx_id,
-                    // tx_type: data.tx_type,
                 },
             });
             if (checkOldNotif == 0) {
@@ -319,8 +167,6 @@ class UtilityHelper {
             return false;
         }
     }
-
-
 
 
 }

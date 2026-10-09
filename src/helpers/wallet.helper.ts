@@ -1,13 +1,10 @@
 import { config } from "../config";
 import kafkaHelper from "../config/kafka.helper";
-// import rabbitMq from "../config/rabbitMq";
 import { CoinFamilyEnum } from "../enum";
 import { CoinInterface, CoinsModel } from "../models";
 import WalletModel from "../models/tables/model.wallets";
-// import ticsProcessHelper from "../processes/process.helper";
 import { Blockchain_Helper } from "./blockchain.helper";
 import { Utility_Helper } from "./utility.helper";
-// import utxo from "./utxo";
 
 class WalletHelper {
     public tica_pending_balance_update_topic = config.config.KAFKA_BALANCE.TICS_PENDING_BALANCE_UPDATE_TOPIC;
@@ -31,7 +28,6 @@ class WalletHelper {
             return balance !== null ? Number(await Utility_Helper.exponentialToDecimal(balance)) : null;
         } catch (error: any) {
             console.error(`WalletHelper Fetch_Balance error >>>`, error);
-            // return 0;
             return null;
         }
     }
@@ -74,15 +70,12 @@ class WalletHelper {
             }
             else {
 
-                //let queue = config.config.KAFKA_BALANCE.TICS_PENDING_BALANCE_UPDATE_TOPIC;
                 let data = {
                     coin_data: coin,
                     wallet_address: wallet_address,
                     queue_count: 0,
                 }
                 await kafkaHelper.produceMessage(this.tica_pending_balance_update_topic, data)
-                // await rabbitMq.assertQueue(queue);
-                // await rabbitMq.sendToQueue(queue, Buffer.from(JSON.stringify(data)));
             }
             return balance;
         } catch (error: any) {
@@ -141,7 +134,6 @@ class WalletHelper {
         } catch (err: any) {
             console.error(`WalletHelper Update_Balance error >>>`, err);
             return null;
-            // return {};
         }
     }
 
