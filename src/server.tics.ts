@@ -24,11 +24,6 @@ class TICSStartProcess {
       await ticsBlockProcess.readBehindBlocks();
     });
   }
-  // public testing_node() {
-  //   schedule.scheduleJob("*/2 * * * * *", async function () {
-  //     await ticsBlockProcess.testingNode();
-  //   });
-  // }
   public readSpecificBlock() {
     schedule.scheduleJob('*/1 * * * *', async function () {
       await ticsBlockProcess.readSpecificBlock();

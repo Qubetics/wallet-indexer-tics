@@ -8,7 +8,6 @@ class KafkaHelper {
     private producer: any;
 
     constructor() {
-        // this.connect();
     }
 
     async connect() {
