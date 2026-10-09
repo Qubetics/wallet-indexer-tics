@@ -14,8 +14,6 @@ class UpdateBalanceController {
         await consumer.subscribe({ topic: this.tics_pending_balance_update_topic, fromBeginning: true });
         await consumer.run({
             eachMessage: async ({ topic, partition, message }: { topic: any, partition: any, message: any }) => {
-                //console.log("🚀 ~ startTxStatusUpdateQueue topic >>>>", topic);
-                //console.log("🚀 ~ startTxStatusUpdateQueue message.value >>>>", message.value.toString());
                 await this.updateBalance(JSON.parse(message.value.toString()))
             }
         }).catch((err: Error) => {
@@ -67,12 +65,10 @@ class UpdateBalanceController {
             const limit = 20;
 
             const findCoinCounter = await ticsProcessHelper.getKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, pageCounter)
-            //console.log("🚀 ~ ticsUpdateBalanceController ~ publicupdateWalletBalanceByWal ~ findCoinCounter:", findCoinCounter)
 
             if (findCoinCounter) {
                 coinLimitCount = Number(findCoinCounter);
             }
-            //console.log("🚀 ~ ticsUpdateBalanceController ~ publicupdateWalletBalanceByWal ~ coin_limit_count:", coinLimitCount)
             const wallets: any = await WalletModel.findAll({
                 attributes: ['wallet_address', 'balance'],
                 where: {
@@ -90,7 +86,6 @@ class UpdateBalanceController {
                 offset: coinLimitCount,
                 order: [['wallet_id', 'ASC']],
                 nest: true,
-                // logging: true
             });
             if (!wallets) {
                 await ticsProcessHelper.setKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, pageCounter, '0')
@@ -111,20 +106,16 @@ class UpdateBalanceController {
                 }
             }
             if (wallets.length < limit) {
-                // console.log("inside wallets limit")
                 await ticsProcessHelper.setKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, pageCounter, '0')
             } else {
                 coinLimitCount += limit;
-                // console.log("incrementing cnt")
                 await ticsProcessHelper.setKeyValuePair(config.config.REDISKEYS.ALL_PROCESSES, pageCounter, coinLimitCount.toString())
             }
-            // console.log("\nEND")
             return true;
         } catch (err: any) {
             console.error("Error in updateWalletBalanceByWallet", err)
         }
     };
-
 
 
 }

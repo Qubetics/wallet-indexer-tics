@@ -115,8 +115,6 @@ class TicsTxStatusUpdateProcess {
       } else if (txData.coin?.token_type?.toLowerCase() == TokenStandard.ERC721?.toLowerCase() || txData.coin?.token_type?.toLowerCase() == TokenStandard.ERC1155?.toLowerCase()) {
         coin_data = await ticsProcessHelper.checkIfOurNFTContract(txData.coin.token_address);
       }
-      // let coin_data: any = await CoinsModel.findOne({ attributes: ['is_token', 'token_type', 'coin_symbol', 'coin_family', 'cmc_id', 'coin_symbol', 'added_by'], where: { coin_id: txData.coin_id } });
-      //let coin_data: any = await ticsProcessHelper.CoinByCoinId(txData.coin_id);
       const trx_data = {
         coin_id: txData?.coin.coin_id,
         status: txData?.status,
@@ -201,9 +199,6 @@ class TicsTxStatusUpdateProcess {
 
             const isNft = trx_data?.coin?.token_type?.toLowerCase() === TokenStandard.ERC721.toLowerCase() || trx_data?.coin?.token_type?.toLowerCase() === TokenStandard.ERC1155.toLowerCase();
 
-            // const notiMsg = isNft ? `${trnxTypeW} request of NFT(${coin_symbol.toUpperCase()}) with token id ${amount} has been confirmed.` : `${trnxTypeW} of ${await Utility_Helper.bigNumberSafeConversion(
-            //   amount
-            // )} ${coin_symbol.toUpperCase()} has been confirmed.`;
 
             const notiMsg = isNft ? `${trnxTypeW} request of NFT(${coin_symbol.toUpperCase()}) has been confirmed.` : `${trnxTypeW} of ${await Utility_Helper.bigNumberSafeConversion(
               amount
@@ -246,9 +241,6 @@ class TicsTxStatusUpdateProcess {
 
             const isNft = trx_data?.coin?.token_type?.toLowerCase() === TokenStandard.ERC721.toLowerCase() || trx_data?.coin?.token_type?.toLowerCase() === TokenStandard.ERC1155.toLowerCase();
 
-            // const notiMsg = isNft ? `Deposit of NFT(${trx_data?.coin?.coin_symbol?.toUpperCase()}) with token id ${amount} has been confirmed.` : `${trnxTypeD} of ${await Utility_Helper.bigNumberSafeConversion(
-            //   amount
-            // )} ${trx_data?.coin?.coin_symbol.toUpperCase()} has been confirmed.`;
 
             const notiMsg = isNft ? `Deposit of NFT(${trx_data?.coin?.coin_symbol?.toUpperCase()}) has been confirmed.` : `${trnxTypeD} of ${await Utility_Helper.bigNumberSafeConversion(
               amount
@@ -298,7 +290,6 @@ class TicsTxStatusUpdateProcess {
 
           const isNft = trx_data?.coin?.token_type?.toLowerCase() === TokenStandard.ERC721.toLowerCase() || trx_data?.coin?.token_type?.toLowerCase() === TokenStandard.ERC1155.toLowerCase();
 
-          // const notiMsg = isNft ? `Withdraw of NFT(${trx_data?.coin.coin_symbol.toUpperCase()}) with token id ${amount} has been failed.` : `${trnxTypeW} of ${await Utility_Helper.bigNumberSafeConversion(amount)} ${trx_data?.coin.coin_symbol.toUpperCase()} has been failed.`;
 
           const notiMsg = isNft ? `Withdraw of NFT(${trx_data?.coin.coin_symbol.toUpperCase()}) has been failed.` : `${trnxTypeW} of ${await Utility_Helper.bigNumberSafeConversion(amount)} ${trx_data?.coin.coin_symbol.toUpperCase()} has been failed.`;
 

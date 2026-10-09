@@ -11,12 +11,10 @@ class TICSStartProcess {
     this.updateTxStatusProcess();
     this.TICSUpdateBalance();
     this.TICSUpdateBalanceByWallet()
-    // this.testing_node()
   }
   public read_block_process() {
     schedule.scheduleJob("*/5 * * * * *", async function () {
       await tics_blocks_process.getBlocks();
-      // await tics_blocks_process.readBehindBlock()
     });
   }
   public read_behind_block_process() {
@@ -24,11 +22,6 @@ class TICSStartProcess {
       await tics_blocks_process.readBehindBlock()
     });
   }
-  // public testing_node() {
-  //   schedule.scheduleJob("*/2 * * * * *", async function () {
-  //     await tics_blocks_process.testingNode();
-  //   });
-  // }
   public readSpecificBlock() {
     schedule.scheduleJob('*/1 * * * *', async function () {
       await tics_blocks_process.readSpecificBlock();
@@ -64,7 +57,6 @@ class TICSStartProcess {
   // TICS Update Balance By Wallet
   public async TICSUpdateBalanceByWallet() {
     schedule.scheduleJob("*/1 * * * *", async function () {
-      // schedule.scheduleJob("*/50 * * * * *", async function () {
       await TICS_balance_update.default.updateWalletBalanceByWallet();
     });
   }

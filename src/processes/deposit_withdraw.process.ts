@@ -181,13 +181,9 @@ class TicsDepositWithdrawProcess {
 
         const isNft = coin?.token_type?.toLowerCase() === TokenStandard.ERC721.toLowerCase() || coin?.token_type?.toLowerCase() === TokenStandard.ERC1155.toLowerCase();
 
-        // const notiMsg = isNft ? `Deposit of NFT(${coin.coin_symbol.toUpperCase()}) with token id ${amount} has been confirmed.` : `${trnxTypeD} of ${await Utility_Helper.bigNumberSafeConversion(amount)} ${coin?.coin_symbol?.toUpperCase()} has been confirmed.`;
 
         const notiMsg = isNft ? `Deposit of NFT(${coin?.coin_symbol?.toUpperCase()}) has been confirmed.` : `${trnxTypeD} of ${await Utility_Helper.bigNumberSafeConversion(amount)} ${coin?.coin_symbol?.toUpperCase()} has been confirmed.`;
 
-        // const notiMsg = `${trnxTypeD} of ${await Utility_Helper.bigNumberSafeConversion(
-        //   amount
-        // )} ${coin?.coin_symbol?.toUpperCase()} has been confirmed.`;
 
         const notifData: NotificationInterface = {
           title: trnxTypeD?.toUpperCase(),
@@ -242,13 +238,9 @@ class TicsDepositWithdrawProcess {
 
         const isNft = coin?.token_type?.toLowerCase() === TokenStandard.ERC721.toLowerCase() || coin?.token_type?.toLowerCase() === TokenStandard.ERC1155.toLowerCase();
 
-        // const notiMsg = isNft ? `${trnxTypeW} request of NFT(${coin.coin_symbol.toUpperCase()}) with token id ${amount} has been confirmed.` : `${trnxTypeW} request of ${await Utility_Helper.bigNumberSafeConversion(amount)} ${coin.coin_symbol?.toUpperCase()} has been confirmed.`;
 
         const notiMsg = isNft ? `${trnxTypeW} request of NFT(${coin?.coin_symbol?.toUpperCase()}) has been confirmed.` : `${trnxTypeW} request of ${await Utility_Helper.bigNumberSafeConversion(amount)} ${coin?.coin_symbol?.toUpperCase()} has been confirmed.`;
 
-        // const notiMsg = `${trnxTypeW} of ${await Utility_Helper.bigNumberSafeConversion(
-        //   amount
-        // )} ${coin.coin_symbol?.toUpperCase()} has been confirmed.`;
 
         const notifData: NotificationInterface = {
           title: trnxTypeW?.toUpperCase(),

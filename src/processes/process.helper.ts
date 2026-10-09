@@ -128,7 +128,6 @@ class TicsProcessHelper {
         }
       }
 
-      // redisClient.set(config.TOKEN_TYPE_TICS || "", JSON.stringify(tokens));
     } catch (err: any) {
       console.error('fetchERC20Tokens >>>>>', err);
       await global_helper.save_error_logs('TICS_fetchERC20Tokens', err.message)
@@ -166,7 +165,6 @@ class TicsProcessHelper {
 
       }
 
-      // redisClient.set(config.TOKEN_TYPE_TICS || "", JSON.stringify(tokens));
     } catch (err: any) {
       console.error('fetchNftTokens >>>>>', err);
       await global_helper.save_error_logs('TICS_fetchNftTokens', err.message)
@@ -201,9 +199,6 @@ class TicsProcessHelper {
   public checkIfContract = async (address: string) => {
     try {
       const token_data: any = await this.getKeyValuePair(config.TOKEN_TYPE_TICS, address);
-      // if (token_data) {
-      //   console.log("token_data>>>>>>>>", token_data)
-      // }
       return JSON.parse(token_data);
     } catch (err: any) {
       console.error('check_our_wallet_address >>>>>', err);
