@@ -131,18 +131,18 @@ class Tics_block_process {
                         end_block: end_block,
                         diff: end_block - start_block
                     }
-                    let dataaaaa_exist: any = await ticsProcessHelper.setKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_TICS, JSON.stringify(add_data))
+                    await ticsProcessHelper.setKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_TICS, JSON.stringify(add_data));
                 } else {
                     console.log("id>>>>>>>>>>>", id)
                     await TicsOldBLockModel.update({ status: 1 }, { where: { id: id } })
                     await ticsProcessHelper.deleteKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_TICS)
 
-                    let behindBlocks: any = await ticsProcessHelper.behindBlocks()
+                    await ticsProcessHelper.behindBlocks();
 
                 }
             } else {
                 // DB BASED
-                let behindBlocks: any = await ticsProcessHelper.behindBlocks()
+                await ticsProcessHelper.behindBlocks();
             }
 
         } catch (err: any) {

@@ -1,5 +1,5 @@
 import database from "../config/db";
-import Sequelize, { QueryTypes } from "sequelize";
+import { QueryTypes } from "sequelize";
 import { CoinInterface, CoinsModel, TicsOldBLockModel, WalletInterface } from "../models";
 import redisClient from "../config/redis";
 import { promisify } from "util";
@@ -7,7 +7,6 @@ import { config } from "../config/config";
 import { BooleanEnum, CoinFamilyEnum } from "../enum";
 import { global_helper } from "../helpers/global_helper";
 import { Blockchain_Helper } from "../helpers";
-import { Op } from "sequelize";
 
 class TicsProcessHelper {
   public CoinsInterface: CoinInterface[];
@@ -222,7 +221,7 @@ class TicsProcessHelper {
           end_block: behindBlocks.end_block,
           diff: behindBlocks.end_block - behindBlocks.start_block
         }
-        let dataaaaa_exist: any = await this.setKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_TICS, JSON.stringify(add_data))
+        await this.setKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_TICS, JSON.stringify(add_data));
       } else {
         console.log("you have not any behind block yet")
       }
