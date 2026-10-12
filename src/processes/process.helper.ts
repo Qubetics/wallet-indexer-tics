@@ -4,7 +4,6 @@ import { CoinInterface, coinsModel, ticsOldBlockModel, WalletInterface } from ".
 import redisClient from "../config/redis";
 import { promisify } from "util";
 import { config } from "../config/config";
-import { BooleanEnum, CoinFamilyEnum } from "../enum";
 import { globalHelper } from "../helpers/global.helper";
 import { blockChainHelper } from "../helpers";
 
@@ -208,7 +207,7 @@ class TicsProcessHelper {
           end_block: behindBlocks.end_block,
           diff: behindBlocks.end_block - behindBlocks.start_block
         }
-        let dataaaaa_exist: any = await this.setKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_TICS, JSON.stringify(add_data))
+        await this.setKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_TICS, JSON.stringify(add_data));
       } else {
         console.log("you have not any behind block yet")
       }

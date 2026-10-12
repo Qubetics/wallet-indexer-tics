@@ -1,12 +1,12 @@
 import { config } from "../config/config";
-import { BlockChainStatusEnum, BooleanEnum, CoinFamilyEnum, NotificationTypeEnum, TokenStandard, TrnxTypeEnum } from "../enum";
-import { coinsModel, NotificationInterface, trnxHistoryModel } from "../models";
-import { utilityHelper, walletHelper, blockChainHelper, dbHelper } from "../helpers";
+import { BlockChainStatusEnum, BooleanEnum, NotificationTypeEnum, TokenStandard, TrnxTypeEnum } from "../enum";
+import { NotificationInterface, trnxHistoryModel } from "../models";
+import { utilityHelper, walletHelper, blockChainHelper } from "../helpers";
 import ticsProcessHelper from "./process.helper";
 import { Op } from "sequelize";
 import { globalHelper } from "../helpers/global.helper";
 import kafkaHelper from "../config/kafka.helper";
-import { ethers, TransactionReceipt, TransactionResponse } from "ethers";
+import { ethers, TransactionResponse } from "ethers";
 import { pendingTrnx, TransactionData, TxUpdateData } from "../interfaces/globalHelper";
 
 class TicsTxStatusUpdateProcess {

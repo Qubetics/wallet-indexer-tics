@@ -84,26 +84,6 @@ class BlockChainHelper {
         }
     }
 
-    private erc721TokenFetchBalance = async (
-        wallet_address: string,
-        contract_address: string | null
-    ) => {
-        try {
-            if (contract_address) {
-                const contract = new ethers.Contract(
-                contract_address,
-                config.config.ERC721ABI,
-                this.provider
-                );
-                const balance = await contract.balanceOf(wallet_address);
-                return Number(balance.toString());
-            }
-            return null;
-        } catch (error) {
-                console.error(`Tics_Helper erc721TokenFetchBalance error >>`, error);
-            return null;
-        }
-    }
 
     public coinFetchBalance = async (
         address: string
