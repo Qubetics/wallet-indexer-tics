@@ -2,7 +2,7 @@ import { TxType, WebHookTxType } from "../types/ERC20Tokens.types";
 import { CoinInterface, NotificationInterface, TrnxHistoryModel } from "../models";
 import { config } from "../config/config";
 import ticsProcessHelper from "./process.helper";
-import { BlockChainStatusEnum, CoinFamilyEnum, NotificationTypeEnum, TokenStandard, TrnxTypeEnum, TxReqTypesEnum } from "../enum";
+import { BlockChainStatusEnum, TokenStandard, TrnxTypeEnum, TxReqTypesEnum } from "../enum";
 import { Utility_Helper, Wallet_Helper } from "../helpers"
 import { Op } from "sequelize";
 import { global_helper } from "../helpers/global_helper";

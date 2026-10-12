@@ -1,7 +1,7 @@
 import { config } from "../config/config";
-import { BlockChainStatusEnum, BooleanEnum, CoinFamilyEnum, NotificationTypeEnum, TokenStandard, TrnxTypeEnum } from "../enum";
-import { CoinsModel, NotificationInterface, TrnxHistoryModel } from "../models";
-import { Utility_Helper, Wallet_Helper, Blockchain_Helper, Db_Helper } from "../helpers";
+import { BlockChainStatusEnum, BooleanEnum, NotificationTypeEnum, TokenStandard, TrnxTypeEnum } from "../enum";
+import { NotificationInterface, TrnxHistoryModel } from "../models";
+import { Utility_Helper, Wallet_Helper, Blockchain_Helper } from "../helpers";
 import ticsProcessHelper from "./process.helper";
 import { Op } from "sequelize";
 import { global_helper } from "../helpers/global_helper";

@@ -70,7 +70,7 @@ class Global_helper {
             const MAILGUN_API_KEY: string = `${config.MAILGUN.MAILGUN_API_KEY}`;
             const MAILGUN_DOMAIN: string = `${config.MAILGUN.MAILGUN_DOMAIN}`;
             const MAILGUN_BASE_URL: string = `${config.MAILGUN.MAILGUN_BASE_URL}${MAILGUN_DOMAIN}`;
-            const response: any = await axios({
+            await axios({
                 method: 'post',
                 url: `${MAILGUN_BASE_URL}/messages`,
                 auth: {
