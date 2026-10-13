@@ -4,21 +4,13 @@ import {
 } from "../enum";
 import { CoinInterface } from "../models";
 
-export type WalletAddresses = {
-  wallet_address: string;
-};
 
-export type ERC20Tokens = {
+type ERC20Tokens = {
   coin_symbol: string;
   token_address: string;
   decimals: number;
 };
 
-export type ERC721Tokens = {
-  coin_symbol: string;
-  token_address: string;
-  decimals: number;
-};
 
 export type TxType = {
   txId: string;
