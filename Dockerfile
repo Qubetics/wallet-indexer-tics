@@ -10,8 +10,5 @@ RUN npm install
 # RUN npm ci --only=production
 
 # Bundle app source
-# docker run -p 3000:3000 -d docker_demo//TO run Docker file
-# docker logs -f 1c469512bba9 //for logs
 COPY . .
-EXPOSE 3002
 CMD [ "npm", "run", "start" ]
